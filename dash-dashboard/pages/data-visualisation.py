@@ -13,9 +13,10 @@ connection = mysql.connector.connect(
     host='127.0.0.1',
     port='3306',
     user='root',
-    password='Lks6712281119@'
+    password=''
 )
-'''
+
+#1. competitor price
 # Fetch data from SQL database
 cp_query = """
     SELECT attraction, ticket, price
@@ -45,7 +46,9 @@ cp_fig = px.strip(cp_df, x='attraction', y='price', color='attraction', title='P
 # Add horizontal lines for adult and child prices
 cp_fig.add_hline(y=20, line=dict(color='blue', width=2, dash='dash'), annotation_text='Adult', annotation_position='top right')
 cp_fig.add_hline(y=17, line=dict(color='red', width=2, dash='dash'), annotation_text='Child', annotation_position='bottom right')
-'''
+
+
+#2. occupancy rate
 ridership_month_query = '''
     SELECT Period, Ridership,Date
     FROM dsa3101.ridershipbymonth;
