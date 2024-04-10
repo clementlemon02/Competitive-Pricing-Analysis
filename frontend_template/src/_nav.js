@@ -57,7 +57,7 @@ const _nav = [
   },
   {
     component: CNavItem,
-    name: 'Know more about Mount Faber',
+    name: 'Get To Know Us',
     href: 'https://www.mountfaberleisure.com/',
     target: '_blank',
     rel: 'noopener noreferrer',
