@@ -1,0 +1,27 @@
+/* CSS styles for navbar */
+.nav-text-default {
+    color:#3A3B3C;
+    text-align: center;
+}
+
+.nav-text-selected {
+    color: #FFFFFF;
+    text-align: center;
+}
+
+.nav-button-default {
+    border-style: solid;
+    margin-right: 15px;
+    width: 150px;
+    border-radius: 25px;
+    border-width: medium;
+}
+
+.nav-button-selected {
+    border-style: solid;
+    margin-right: 15px;
+    width: 150px;
+    border-radius: 25px;
+    background-color: #333333;
+    border-width: medium;
+}
