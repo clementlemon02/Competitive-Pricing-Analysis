@@ -1,22 +1,24 @@
 import dash
-from dash import Dash, html, dcc
+from dash import Dash, html, dcc, Input, Output
+import dash_bootstrap_components as dbc
 
-app = Dash(__name__, use_pages=True)
+#Import navbar from separate modules
+from components import navbar
 
-app.layout = html.Div([
-    html.H1('Mount Faber Leisure Group'),
-    html.Div([
-        html.Div(
-            dcc.Link(f"{page['name']} - {page['path']}", href=page["relative_path"])
-        ) for page in dash.page_registry.values()
-    ]),    dash.page_container
-])
+# Import Open Sans Font for those that is not using it
+app = Dash(__name__, use_pages=True, external_stylesheets=['https://fonts.googleapis.com/css2?family=Lora:wght@400;700&display=swap', dbc.themes.BOOTSTRAP])
+
+app.layout = html.Div(children=[
+    dcc.Location(id="url"),
+    navbar, 
+   dbc.Container([
+				dash.page_container
+				],
+				id="page-content",
+				fluid=True
+			)
+])#, style={'zoom':'85%'}) # Set zoom to 85% to accommodate small screens
 
 if __name__ == '__main__':
     app.run(debug=True)
 
-
-# Notes:
-# Pages are stored in the registry values 
-# so to create a new page, remember to include `dash.register_page(__name__)`
-# so the .py file is recognized by Dash as a page.
