@@ -1,59 +1,111 @@
 import os
+from urllib import request
 from flask import Flask, jsonify
 from sqlalchemy import create_engine, text
 from dotenv import load_dotenv
 
-# Load environment variables from .env file
+# from mesa import run_model
+
 load_dotenv()
 
 app = Flask(__name__)
 
-# Get database connection parameters from environment variables
 DB_USER = os.getenv('DB_USER')
 DB_PASSWORD = os.getenv('DB_PASSWORD')
 DB_HOST = os.getenv('DB_HOST')
 DB_NAME = os.getenv('DB_NAME')
 
-# Create database connection
 engine = create_engine(f'mysql://{DB_USER}:{DB_PASSWORD}@{DB_HOST}/{DB_NAME}')
-
-# Sample SQL queries (replace these with your actual queries)
-SALES_QUERY = "SELECT * FROM sales"
-TOURIST_QUERY = "SELECT * FROM tourists"
-RIDERSHIP_QUERY = "SELECT * FROM ridership"
-PRICE_QUERY = "SELECT * FROM prices"
-
+SALES_QUERY = text("SELECT * FROM sales")
+VISITOR_QUERY = text("SELECT * FROM annual_visitor")
+RIDERSHIP_QUERY = text("SELECT * FROM ridership")
+PRICE_QUERY = text("SELECT * FROM prices")
+COMPETITOR_PRICES_QUERY = text("SELECT * FROM competitor_prices_dataset")
+RIDERSHIP_NATIONALITIES_QUERY = text("SELECT * FROM Key_Nationalities_of_Riders")
+RIDERSHIP_BY_HOUR_QUERY = text("SELECT * FROM Ridership_by_Hour")
+RIDERSHIP_BY_MONTH_QUERY = text("SELECT * FROM Ridership_by_Month")
+MONTHLY_SALES_QUERY = text("SELECT * FROM Sales_by_Month")
+TOURIST_AGE_GROUP_QUERY = text("SELECT * FROM tourists_age_group_annual")
 
 def execute_sql_query(query):
-    """Execute SQL query and return results."""
     with engine.connect() as connection:
         result = connection.execute(query)
-        return [dict(row) for row in result]
+        return result.fetchall()
 
+@app.route('/health', methods=['GET'])
+def health():
+    return jsonify({"status": "healthy"})
 
-@app.route('/sales', methods=['GET'])
-def get_sales_data():
-    """API endpoint to retrieve sales data."""
-    sales_data = execute_sql_query(SALES_QUERY)
-    return jsonify(sales_data)
+@app.route('/visitor', methods=['GET'])
+def get_visitor_data():
+    visitor_data = execute_sql_query(VISITOR_QUERY)
+    formatted_data = []
+    for row in visitor_data:
+        formatted_data.append({
+            'year': row[0],
+            'visitor_count': row[1],
+        })
+    return jsonify(formatted_data)
 
+@app.route('/competitor_prices', methods=['GET'])
+def get_competitor_prices():
+    competitor_prices = execute_sql_query(COMPETITOR_PRICES_QUERY)
+    formatted_data = []
+    for row in competitor_prices:
+        formatted_data.append({
+            'ticket': row[0],
+            'price': row[1],
+        })
+    return jsonify(formatted_data)
 
-@app.route('/tourist', methods=['GET'])
-def get_tourist_data():
-    """API endpoint to retrieve tourist data."""
-    tourist_data = execute_sql_query(TOURIST_QUERY)
-    return jsonify(tourist_data)
+@app.route('/ridership_nationalities', methods=['GET'])
+def get_ridership_nationalities():
+    ridership_nationalities = execute_sql_query(RIDERSHIP_NATIONALITIES_QUERY)
+    formatted_data = []
+    for row in ridership_nationalities:
+        formatted_data.append({
+            'Nationality': row[1],
+            'Percentage': row[2],
+        })
+    return jsonify(formatted_data)
 
+@app.route('/ridership_by_hour', methods=['GET'])
+def get_ridership_by_hour():
+    ridership_by_hour = execute_sql_query(RIDERSHIP_BY_HOUR_QUERY)
+    formatted_data = []
+    for row in ridership_by_hour:
+        formatted_data.append({
+            'Hour': row[0],
+            'Ridership': row[1],
+        })
+    return jsonify(formatted_data)
 
-@app.route('/ridership', methods=['GET'])
-def get_ridership_data():
-    """API endpoint to retrieve ridership data."""
-    ridership_data = execute_sql_query(RIDERSHIP_QUERY)
-    return jsonify(ridership_data)
+@app.route('/ridership_by_month', methods=['GET'])
+def get_ridership_by_month():
+    ridership_by_month = execute_sql_query(RIDERSHIP_BY_MONTH_QUERY)
+    formatted_data = []
+    for row in ridership_by_month:
+        formatted_data.append({
+            'Period': row[0],
+            'Ridership': row[1],
+        })
+    return jsonify(formatted_data)
 
+@app.route('/monthly_sales', methods=['GET'])
+def get_monthly_sales():
+    monthly_sales = execute_sql_query(MONTHLY_SALES_QUERY)
+    return jsonify(monthly_sales)
 
-@app.route('/price', methods=['GET'])
-def get_price_data():
-    """API endpoint to retrieve price data."""
-    price_data = execute_sql_query(PRICE_QUERY)
-    return jsonify(price_data)
+@app.route('/tourist_age_group', methods=['GET'])
+def get_tourist_age_group():
+    tourist_age_group = execute_sql_query(TOURIST_AGE_GROUP_QUERY)
+    return jsonify(tourist_age_group)
+
+# @app.route('/run_model', methods=['POST'])
+# def run_model_endpoint():
+#     input_data = request.json
+#     output_data = run_model(input_data)  
+#     return jsonify(output_data)
+
+if __name__ == '__main__':
+    app.run()
