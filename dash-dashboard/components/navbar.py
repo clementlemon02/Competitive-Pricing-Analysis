@@ -17,12 +17,10 @@ navbar = dbc.Navbar(
             # Create Logo and Brand flushed to the left
             dbc.Row(
                 dbc.Col([
-                    #html.Img(src=app.get_asset_url('nus_logo.svg'), height="72px", style={"padding": "10px"}),
-                    dbc.NavbarBrand("Mount Faber Group",
-                                    style={'font-weight': 'bold', 'font-size': '35px', 'color': '#3A3B3C',
-                                           'padding-left': '30px', 'vertical-align': 'middle'})
-                ])
-            ),
+                    html.Img(src='/assets/mlfg_logo.png', height="85px"),
+                    dbc.NavbarBrand("Mount Faber Leisure Group")
+                    ])
+                    ),
 
             # Create navigation buttons flushed to the right
             dbc.Row(
@@ -38,11 +36,12 @@ navbar = dbc.Navbar(
                 )
             )
         ],
-        style={'font-family': 'Open Sans', 'font-size': '18px', 'height': 'auto', 'background-color': '#d3d3d3'},
+        style={'font-size': '18px', 'height': 'auto', 'background-color': '#fafafa'},
         fluid=True
     ),
-    style={'padding': '0px'}  # set to 0 else will have white space
+    style={'padding': '0px', 'position': 'fixed', 'top': '0', 'width': '100%', 'z-index': '1000'}  # Fix navbar position
 )
+
 
 # Define the callback to highlight active button
 @callback(
