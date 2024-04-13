@@ -4,7 +4,7 @@ import sys
 import subprocess
 
 def run_backend():
-    subprocess.Popen(["python", "backend/app.py"])
+    subprocess.Popen(["python", "Backend/app.py"])
 
 def run_frontend():
     subprocess.Popen(["python", "frontend/app.py"])
