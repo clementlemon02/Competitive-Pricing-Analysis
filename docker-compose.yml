@@ -6,8 +6,6 @@ services:
       context: ./Backend
     depends_on:
       - database
-    env_file:
-      - .env
     volumes:
       - ./backend/logs:/backend/logs
     ports:
@@ -21,7 +19,5 @@ services:
 
   database:
     image: mysql:8.3.0
-    env_file:
-      - .env
     volumes:
       - ./database:/docker-entrypoint-initdb.d
