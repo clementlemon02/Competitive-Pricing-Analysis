@@ -4,9 +4,9 @@ from flask import Flask, jsonify
 from sqlalchemy import create_engine, text
 from dotenv import load_dotenv
 
-# from mesa import run_model
+from pricesimulation.main import run_simulation
 
-load_dotenv()
+load_dotenv() 
 
 app = Flask(__name__)
 
@@ -101,11 +101,11 @@ def get_tourist_age_group():
     tourist_age_group = execute_sql_query(TOURIST_AGE_GROUP_QUERY)
     return jsonify(tourist_age_group)
 
-# @app.route('/run_model', methods=['POST'])
-# def run_model_endpoint():
-#     input_data = request.json
-#     output_data = run_model(input_data)  
-#     return jsonify(output_data)
+@app.route('/run_model', methods=['POST'])
+def run_model_endpoint():
+    input_data = request.json
+    output_data = run_simulation(input_data)  
+    return jsonify(output_data)
 
 if __name__ == '__main__':
     app.run()

@@ -1,0 +1,27 @@
+version: '3'
+
+services:
+  backend:
+    build:
+      context: ./Backend
+    depends_on:
+      - database
+    env_file:
+      - .env
+    volumes:
+      - ./backend/logs:/backend/logs
+    ports:
+      - "5001:5001" 
+
+  dash-dashboard:
+    build:
+      context: ./dash-dashboard
+    ports:
+      - "8050:8050"  
+
+  database:
+    image: mysql:8.3.0
+    env_file:
+      - .env
+    volumes:
+      - ./database:/docker-entrypoint-initdb.d
