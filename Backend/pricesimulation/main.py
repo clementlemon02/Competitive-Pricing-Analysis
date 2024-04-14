@@ -11,9 +11,9 @@ import json
 def run_simulation(data):
         
     model = SkyHelixModel(num_passengers = data['input_number_of_passengers'],
-                          initial_ticket_price=data['input_initial_price'],
-                          competitors_price=data['input_competitors_price'],
-                          grid_width=1, grid_height=1)
+                          initial_ticket_price = data['input_initial_ticket_price'],
+                          competitors_price = data['input_competitors_price'],
+                        )
 
     # Run the model for a fixed number of steps
     for i in np.arange(10):  
@@ -21,13 +21,13 @@ def run_simulation(data):
 
     # Access model data and visualize results
     optimized_parameters = model.get_optimized_parameters()
-    print("Optimized Ticket Price:", optimized_parameters["Optimized_Ticket_Price"])
+    print("Average Competitor Price:", "S$", round(model.average_competitor_price,2))
+    print("Optimized Ticket Price:", "S$", round(optimized_parameters["Optimized_Ticket_Price"],2))
     print("Expected Passengers:", optimized_parameters["Expected_Passengers"])
-    print("Expected Revenue:", optimized_parameters["Expected_Revenue"])
+    print("Expected Revenue:", "S$", round(round(optimized_parameters["Optimized_Ticket_Price"], 2) * optimized_parameters["Expected_Passengers"],2))
     print("Tickets Purchased:", optimized_parameters["Tickets_Purchased"])
     print("Tickets Not Purchased:", optimized_parameters["Tickets_Not_Purchased"])
 
-    model.plot_utility_vs_price()
     model.plot_utility()
 
 
@@ -49,7 +49,7 @@ if __name__ == "__main__":
     # Example usage
     test_data = {
         'input_number_of_passengers': 10000,
-        'input_initial_price': 30,
-        'input_competitors_price': 20
+        'input_initial_ticket_price': 20,
+        'input_competitors_price': [10, 30, 48, 49.5, 30, 23, 45.6, 12, 40, 42, 34.05, 40, 45.6]
     }
     run_simulation(test_data)

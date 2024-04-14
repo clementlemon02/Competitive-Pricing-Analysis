@@ -8,13 +8,15 @@ import seaborn as sns
 import numpy as np
 
 class SkyHelixModel(Model):
-    def __init__(self, num_passengers, initial_ticket_price,competitors_price, grid_width, grid_height):
+    def __init__(self, num_passengers, initial_ticket_price,competitors_price):
         super().__init__()
         self.num_passengers = num_passengers
         self.ticket_price = initial_ticket_price
+        self.initial_ticket_price = initial_ticket_price
         self.competitors_price = competitors_price
-        self.grid_width = grid_width
-        self.grid_height = grid_height
+        self.average_competitor_price = 0
+        self.grid_width = 1
+        self.grid_height = 1
         self.demographic_densities = {
             "Adult": 0.5,
             "Senior": 0.2,
@@ -41,53 +43,29 @@ class SkyHelixModel(Model):
                 self.grid.place_agent(agent, (x, y))
                 self.schedule.add(agent)
 
-
-          # if base price > max price
-
     def step(self):
-        # Adjust the ticket price based on optimization strategy
         self.optimize_ticket_price()
-
-        # Step through the model and collect data
+        self.calculate_average_competitor_price()
         self.schedule.step()
         self.datacollector.collect(self)
 
+    def calculate_average_competitor_price(self):
+        if self.schedule.agents:
+            self.average_competitor_price = np.mean([agent.model.competitors_price for agent in self.schedule.agents])
+
+
     def optimize_ticket_price(self):
-    # Calculate the current demand as the number of agents willing to purchase tickets at the current price
+      # Use a feedback loop from market conditions
+      if self.ticket_price > self.average_competitor_price:
+        self.ticket_price *= (1 - 0.02)  # Adjust down if above average
+      elif self.ticket_price < self.average_competitor_price:
+        self.ticket_price *= (1 + 0.02)  # Adjust up if below average
+
+      # Maintain bounds
+      self.ticket_price = max(min(self.ticket_price, self.initial_ticket_price * 2), self.initial_ticket_price * 0.5)
+
       demand = sum(agent.ticket_purchased for agent in self.schedule.agents)
-
-    # Adjust the ticket price based on demand
-      if demand > self.num_passengers / 2:
-        self.ticket_price += 1  # Increase price if demand is high
-      elif demand < self.num_passengers / 4:
-        self.ticket_price -= 1  # Decrease price if demand is low
-
-    # Calculate revenue based on the current ticket price and demand
       self.total_revenue = self.ticket_price * demand  # Corrected to match actual demand
-
-    # Update the total number of tickets sold
-      self.total_tickets_sold = demand  # Corrected to reflect actual purchases
-
-    # def optimize_ticket_price(self):
-    #     total_demand = 0
-    #     for agent in self.schedule.agents:
-    #         if agent.demographic == "Family":
-    #             total_demand += agent.num_individuals if agent.ticket_purchased else 0
-    #         else:
-    #             total_demand += 1 if agent.ticket_purchased else 0
-
-    #     # Adjust ticket price based on demand
-    #     if total_demand > self.num_passengers / 2:
-    #         self.ticket_price += 1  # Increase price if demand is high
-    #     elif total_demand < self.num_passengers / 4:
-    #         self.ticket_price -= 1  # Decrease price if demand is low
-
-    #     # Calculate revenue based on the current ticket price and total demand
-    #     self.total_revenue = self.ticket_price * total_demand
-
-    #     # Update the total number of tickets sold
-    #     self.total_tickets_sold = total_demand
-
 
 
     def get_ticket_counts(self):
@@ -110,69 +88,20 @@ class SkyHelixModel(Model):
 
       return optimized_parameters
 
-
-    def calculate_utility_threshold(self, target_revenue):
-        # You can define the utility threshold based on various factors, such as target revenue, costs, etc.
-        # For example, you can set the utility threshold as a percentage of the target revenue.
-        # Feel free to adjust this calculation based on your specific requirements.
-
-        # You might want to adjust this calculation based on your specific requirements
-        utility_threshold = target_revenue * 0.1  # 10% of the target revenue
-
-        # Adjust the threshold based on the average utility
-        # For example, you can make it proportional to the average utility
-        average_utility = np.mean(self.get_utility_values())
-        utility_threshold *= average_utility / 10  # Adjust based on the average utility
-
-        return utility_threshold
-
-
-    def calculate_utility_threshold(self, target_revenue):
-        # You can define the utility threshold based on various factors, such as target revenue, costs, etc.
-        # For example, you can set the utility threshold as a percentage of the target revenue.
-        # Feel free to adjust this calculation based on your specific requirements.
-
-        # You might want to adjust this calculation based on your specific requirements
-        utility_threshold = target_revenue * 0.1  # 10% of the target revenue
-
-        # Adjust the threshold based on the average utility
-        # For example, you can make it proportional to the average utility
-        average_utility = np.mean(self.get_utility_values())
-        utility_threshold *= average_utility / 10  # Adjust based on the average utility
-
-        return utility_threshold
-
-    
     def get_utility_values(self):
       utility_values = []
-
       for agent in self.schedule.agents:
           utility = agent.calculate_utility()
           utility_values.append(utility)
-
       return utility_values
 
     def get_utility_and_price(self):
         utility_price_pairs = []
-
         for agent in self.schedule.agents:
             utility = agent.calculate_utility()
             price = self.ticket_price  # Assuming you have a way to access the ticket price
             utility_price_pairs.append((price, utility))
-
         return utility_price_pairs
-
-    def plot_utility_vs_price(self):
-        utility_price_pairs = self.get_utility_and_price()
-        prices, utilities = zip(*utility_price_pairs)
-
-        plt.figure(figsize=(8, 6))
-        plt.scatter(utilities, prices, alpha=0.5)
-        plt.xlabel('utility')
-        plt.ylabel('Ticket Price')
-        plt.title('Utility vs. Ticket Price')
-        plt.grid(True)
-        plt.show()
 
     def plot_utility(self):
         utilities = self.get_utility_values()
@@ -195,7 +124,7 @@ class SkyHelixModel(Model):
 
         # Plot 3: Density plot of utilities
         plt.subplot(1, 3, 3)  # 1 row, 3 columns, 3rd subplot
-        sns.kdeplot(utilities, shade=True, color="r")
+        sns.kdeplot(utilities, fill=True, color="r")
         plt.xlabel('Utility')
         plt.ylabel('Density')
         plt.title('Density Plot of Utility Values')
