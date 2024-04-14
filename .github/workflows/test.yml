@@ -36,7 +36,7 @@ jobs:
 
       - name: Run unit tests
         run: |
-          docker-compose -f docker-compose.yml exec frontend pytest tests
+          docker-compose -f docker-compose.yml exec -T frontend pytest tests
           docker-compose -f docker-compose.yml exec backend pytest tests
 
       - name: Stop Docker services
