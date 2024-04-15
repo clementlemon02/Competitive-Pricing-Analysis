@@ -1,4 +1,4 @@
-from Backend.pricesimulation.agent import PassengerAgent
+from pricesimulation.agent import PassengerAgent
 
 def test_passenger_agent_creation():
     agent = PassengerAgent(1, None, "Adult")
