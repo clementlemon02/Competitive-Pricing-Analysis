@@ -22,8 +22,16 @@
     margin-right: 15px;
     width: 150px;
     border-radius: 25px;
-    background-color: #333333;
+    background-color: #046845;
     border-width: medium;
+    border-color: #8ABA3D;
+}
+
+.nav-button-default:hover,
+.nav-button-selected:hover {
+    background-color: #F0AA06;
+    border-color: #F0AA06;
+    color: #3A3B3C;
 }
 
 .navbar-brand {
@@ -35,24 +43,38 @@
     font-family: 'Lora', serif;
 }
 
-.navbar {
+ .navbar {
     position: fixed;
     top: 0;
     width: 100%;
     background-color: #333;
-    z-index: 100; /* Ensure navbar is above other content */
-  }
+    z-index: 1000; /* Ensure navbar is above other content */
+ }
+  
 
 p {
     font-family: 'Lora', serif;
-    font-size: 20px;
+    font-size: 18px;
 }
 
 h1 {
     font-family: 'Lora', serif;
-    font-size: 30px;
+    font-size: 32px;
 } 
+
+h2 {
+    font-family: 'Lora', serif;
+    font-size: 26px;
+}  
 
 #page-content {
     margin-top: 100px; 
+}
+
+.slider-bar .rc-slider-track {
+    background-color: #046845;
+}
+
+.slider-bar .rc-slider-handle {
+    border-color: #F0AA06;
 }
