@@ -48,6 +48,9 @@ def run_simulation(data):
     # Display the chart
     plt.show()
 
+    ## by front end: we need to add a return statement to print this out at the webpage
+    return optimized_parameters
+
 if __name__ == "__main__":
     # Example usage
     test_data = {
