@@ -6,14 +6,12 @@ services:
       context: ./Backend
     depends_on:
       - database
-    env_file:
-      - .env
     volumes:
-      - ./backend/logs:/backend/logs
+      - ./Backend:/Backend
     ports:
-      - "5001:5001" 
+      - "5001:5000" 
 
-  dash-dashboard:
+  frontend:
     build:
       context: ./dash-dashboard
     ports:
@@ -21,7 +19,7 @@ services:
 
   database:
     image: mysql:8.3.0
-    env_file:
-      - .env
     volumes:
       - ./database:/docker-entrypoint-initdb.d
+    environment:
+      - MYSQL_ALLOW_EMPTY_PASSWORD=yes

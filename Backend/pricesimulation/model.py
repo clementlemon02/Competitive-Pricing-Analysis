@@ -2,7 +2,7 @@ from mesa import Agent, Model
 from mesa.space import MultiGrid
 from mesa.time import RandomActivation
 from mesa.datacollection import DataCollector
-from agent import PassengerAgent
+from .agent import PassengerAgent
 import matplotlib.pyplot as plt
 import seaborn as sns
 import numpy as np

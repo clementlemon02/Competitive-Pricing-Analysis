@@ -107,5 +107,5 @@ def run_model_endpoint():
     output_data = run_simulation(input_data)  
     return jsonify(output_data)
 
-if __name__ == '__main__':
-    app.run()
+if __name__ == "__main__":
+    app.run(host='0.0.0.0')

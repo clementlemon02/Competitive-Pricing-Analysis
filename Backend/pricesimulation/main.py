@@ -1,13 +1,16 @@
-from model import SkyHelixModel
+from .model import SkyHelixModel
 import matplotlib.pyplot as plt
 import numpy as np
 from mesa.batchrunner import batch_run
 import pandas as pd
 import json
 
+import sys
+import os
 
+sys.path.append(os.path.dirname(os.path.abspath(__file__)))
+print(sys.path)
 
-##def run_simulation(object):
 def run_simulation(data):
         
     model = SkyHelixModel(num_passengers = data['input_number_of_passengers'],
