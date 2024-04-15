@@ -1,6 +1,6 @@
 import dash
 import pandas as pd
-from dash import html, dcc, dash_table,callback
+from dash import html, dcc, dash_table, callback
 import mysql.connector
 from dash.dependencies import Input, Output
 import plotly.express as px
@@ -8,18 +8,16 @@ import plotly.graph_objects as go
 from datetime import datetime
 import calendar
 
-dash.register_page(__name__)
-
-
+dash.register_page(__name__, title='MFLG')
 
 # Establish database connection
 connection = mysql.connector.connect(
     host='127.0.0.1',
     port='3306',
     user='root',
-    password='Lks6712281119@'
+    password='Alyssa123!'
 )
-'''
+
 #1. competitor price
 # Fetch data from SQL database
 cp_query = """
@@ -32,10 +30,6 @@ cp_query = """
     ORDER BY mean_price;
 """
 cp_df = pd.read_sql(cp_query, connection)
-
-connection.close()
-
-
 
 # Convert 'attraction' column to categorical data type
 cp_df['attraction'] = cp_df['attraction'].astype('category')
@@ -51,35 +45,32 @@ cp_fig = px.strip(cp_df, x='attraction', y='price', color='attraction', title='P
 cp_fig.add_hline(y=20, line=dict(color='blue', width=2, dash='dash'), annotation_text='Adult', annotation_position='top right')
 cp_fig.add_hline(y=17, line=dict(color='red', width=2, dash='dash'), annotation_text='Child', annotation_position='bottom right')
 
-'''
+
 #2. occupancy rate
 # inport data
 ridership_month_query = '''
     SELECT Period, Ridership,Date
-    FROM dsa3101.ridershipbymonth;
+    FROM mflg.ridership_by_month;
     '''
 
 ridership_hour_query = '''
     SELECT Hour, Ridership as Percentile
-    FROM dsa3101.ridershipbyhour;
+    FROM mflg.ridership_by_hour;
     '''
 
 nationalities_query = '''
     SELECT Nationality, Percentile
-    FROM dsa3101.keynationalities;
+    FROM mflg.riders_nationalities;
     '''
 
 tourist_nationality_query = '''
    SELECT Country, Percentage 
-   FROM dsa3101.'2023 tourists nationalities`;
+   FROM tourism.tourist_nationalities;
 '''
 
 rm_df = pd.read_sql(ridership_month_query, connection)
 rh_df = pd.read_sql(ridership_hour_query, connection)
 nationality_df = pd.read_sql(nationalities_query, connection)
-
-
-print(rm_df)
 
 # data manipulation
 rm_df['Date'] = pd.to_datetime(rm_df['Date'], format='%m/%d/%Y')
@@ -107,13 +98,13 @@ year_dropdown = dcc.Dropdown(
 #3. Tourism data 
 # Your SQL query to fetch data
 tourist_nationality_query = '''
-   SELECT Country, Percentage 
-   FROM dsa3101.tourists_nationalities;
+   SELECT * 
+   FROM tourism.tourist_nationalities;
 '''
 
 tourist_volume_query = '''
     SELECT * 
-    FROM dsa3101.tourist_number;
+    FROM tourism.tourist_arrival;
 '''
 
 tourist_agegroup_query= '''
@@ -122,7 +113,7 @@ SELECT
 	ROUND(AVG(y_prop), 2) AS Avg_Y_Prop,
     ROUND(AVG(a_prop), 2) AS Avg_A_Prop
 FROM
-   dsa3101.tourist_age_group
+   tourism.tourist_age_group
 WHERE 
     SUBSTR(month, 1, 4) BETWEEN '2021' AND '2024'
 GROUP BY 
@@ -141,11 +132,11 @@ connection.close()
 melted_ta_df = pd.melt(ta_df, id_vars='Year', var_name='Age_Group', value_name='Average_Proportion')
 
 # Create plots
-tn_fig = px.bar(tn_df, x="Country", y="Percentage", title="Percentage of Individuals Residing in Different Countries")
-tv_fig = px.line(tv_df, x="Month", y="Arrivals", title="Number of Visitors in 2023")
-ta_fig = px.bar(melted_ta_df, x='Year', y='Average_Proportion', color='Age_Group', barmode='group', 
-                 title='Average Proportion of Young and Adult Individuals Between 2021 and 2024')
-ta_fig.for_each_trace(lambda t: t.update(name="Young" if t.name == "Avg_Y_Prop" else "Adult"))
+#tn_fig = px.bar(tn_df, x="Country", y="Percentage", title="Percentage of Individuals Residing in Different Countries")
+#tv_fig = px.line(tv_df, x="Month", y="Arrivals", title="Number of Visitors in 2023")
+#ta_fig = px.bar(melted_ta_df, x='Date', y='Average_Proportion', color='Age_Group', barmode='group', 
+#                 title='Average Proportion of Young and Adult Individuals Between 2021 and 2024')
+#ta_fig.for_each_trace(lambda t: t.update(name="Young" if t.name == "Avg_Y_Prop" else "Adult"))
 
 
 # for Dropdown and layout
