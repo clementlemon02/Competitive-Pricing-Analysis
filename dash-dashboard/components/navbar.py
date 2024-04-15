@@ -10,6 +10,7 @@ nav_button_default = {'border-style': 'solid', 'border-color': '#F0AA06', 'margi
 nav_button_selected = {'border-style': 'solid', 'border-color': '#8ABA3D', 'margin-right': '15px', 'width': '150px', 'border-radius': '25px',
                        'background-color': '#046845', 'border-width': 'medium'}
 
+
 # Create Navigation Bar
 navbar = dbc.Navbar(
     dbc.Container(
@@ -49,10 +50,11 @@ navbar = dbc.Navbar(
      Output("pricing_text", "style"),
      Output("intro_button", "style"),
      Output("data_button", "style"),
-     Output("pricing_button", "style")
+     Output("pricing_button", "style"),
      ],
     [Input("url", "pathname")]
 )
+
 def highlight_active_button(pathname):
     if pathname == "/":
         return nav_text_selected, nav_text_default, nav_text_default, nav_button_selected, nav_button_default, nav_button_default

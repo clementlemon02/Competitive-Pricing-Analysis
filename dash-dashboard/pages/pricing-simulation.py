@@ -1,5 +1,4 @@
 import dash
-<<<<<<< Updated upstream
 from dash import html, Input, Output, State, callback,dcc
 import json
 from dash.exceptions import PreventUpdate
@@ -9,55 +8,32 @@ parent_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
 parent_dir = os.path.abspath(os.path.join(parent_dir, '..'))
 sys.path.insert(0, parent_dir)
 from Backend.pricesimulation.main import run_simulation
-
-=======
-from dash import html
-import requests
->>>>>>> Stashed changes
+import plotly.graph_objects as go
 
 dash.register_page(__name__)
 
+
+
 # Define the layout for the pricing simulation page
 layout = html.Div([
-<<<<<<< Updated upstream
-    html.H2("Pricing Simulation"),
-    html.Label("Number of Passengers:"),
-    dcc.Input(id="input-number-of-passengers", type="number", value=10000),
-    html.Label("Initial Ticket Price (S$):"),
-    dcc.Input(id="input-initial-ticket-price", type="number", value=20),
-    html.Label("Competitors' Prices (S$, separated by comma):"),
-    dcc.Input(id="input-competitors-price", type="text", placeholder="10, 30, 48, ..."),
+    html.H1("Pricing Simulation"),
+    html.P("Please Key in your input below."),
+    html.Div([
+        html.Div("Number of Visitors:", style={'display': 'inline-block', 'margin-right': '10px'}),
+        dcc.Input(id="input-number-of-passengers", type="number", value=10000),
+    ], style={'margin-bottom': '10px'}),
+    html.Div([
+        html.Div("Initial Ticket Price (S$):", style={'display': 'inline-block', 'margin-right': '10px'}),
+        dcc.Input(id="input-initial-ticket-price", type="number", value=20),
+    ], style={'margin-bottom': '10px'}),
+    html.Div([
+        html.Div("Competitors' Prices (S$, separated by comma):", style={'display': 'inline-block', 'margin-right': '10px'}),
+        dcc.Input(id="input-competitors-price", type="text", placeholder="10, 30, 48, ..."),
+    ], style={'margin-bottom': '10px'}),
     html.Button("Run Simulation", id="run-simulation-button", n_clicks=0, className="mt-3"),
     html.Div(id="simulation-output")
 ], className="mt-3")
 
-'''
-# Callback to run simulation and display output
-@callback(
-    Output('simulation-output', 'children'),
-    [Input('run-simulation-button', 'n_clicks')],
-    [State('input-number-of-passengers', 'value'),
-     State('input-initial-ticket-price', 'value'),
-     State('input-competitors-price', 'value')]
-)
-def run_and_display_simulation(n_clicks, num_passengers, initial_ticket_price, competitors_price):
-    if n_clicks == 0:
-        raise PreventUpdate
-
-    competitors_price = [float(price.strip()) for price in competitors_price.split(',')]
-    test_data = {
-        'input_number_of_passengers': num_passengers,
-        'input_initial_ticket_price': initial_ticket_price,
-        'input_competitors_price': competitors_price
-    }
-    model_output = run_simulation(test_data)
-    # You can modify this to display any specific output from the model if needed
-    return html.Div([
-        html.H2("Simulation Results"),
-        html.Pre(json.dumps(model_output, indent=4)),
-        # Add any additional components to display here (e.g., charts)
-    ])
-'''
 
 @callback(
     Output('simulation-output', 'children'),
@@ -81,6 +57,28 @@ def run_and_display_simulation(n_clicks, num_passengers, initial_ticket_price, c
         'input_competitors_price': competitors_price
     }
     model_output = run_simulation(test_data)
+
+
+    # Create a bar chart trace
+    bar_chart_trace = go.Bar(
+    x=['Purchased Tickets', 'Did Not Purchase Tickets'],
+    y=[model_output["Tickets_Purchased"], model_output["Tickets_Not_Purchased"]],
+    marker=dict(color=['#046845'])
+    )
+
+    # Create layout for the bar chart
+    layout = go.Layout(
+    plot_bgcolor='#E6FAD5',
+    font=dict(family='Lora', size=18),
+    title='Ticket Purchase Distribution',
+    xaxis=dict(title='Ticket Status',tickfont=dict(family='Lora', size=14)),
+    yaxis=dict(title='Number of Agents',tickfont=dict(family='Lora', size=14)),
+    )
+
+    # Create a figure object
+    fig = go.Figure(data=[bar_chart_trace], layout=layout)
+
+
     # You can modify this to display any specific output from the model if needed
 
     # Access model data and visualize results
@@ -89,20 +87,19 @@ def run_and_display_simulation(n_clicks, num_passengers, initial_ticket_price, c
     
     # Construct HTML to display model output
     output_html = html.Div([
-        html.H2("Simulation Results"),
+        html.Div(),
+        html.H1("Simulation Results"),
+        html.Div(),
         #html.P(f"Average Competitor Price: S$ {round(average_competitor_price, 2)}"),
         html.P(f"Optimized Ticket Price: S$ {round(model_output['Optimized_Ticket_Price'], 2)}"),
         html.P(f"Expected Passengers: {model_output['Expected_Passengers']}"),
         html.P(f"Expected Revenue: S$ {round(round(model_output['Optimized_Ticket_Price'], 2) * model_output['Expected_Passengers'], 2)}"),
         html.P(f"Tickets Purchased: {model_output['Tickets_Purchased']}"),
-        html.P(f"Tickets Not Purchased: {model_output['Tickets_Not_Purchased']}")
+        html.P(f"Tickets Not Purchased: {model_output['Tickets_Not_Purchased']}"),
+        html.Div([dcc.Graph(id='ticket-purchase-chart', figure=fig)])
     ])
 
     return output_html
-=======
-    html.H1('Pricing simulation'),
-    html.Div()
-])
 
 
->>>>>>> Stashed changes
+

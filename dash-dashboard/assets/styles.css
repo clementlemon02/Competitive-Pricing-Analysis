@@ -70,3 +70,11 @@ h2 {
 #page-content {
     margin-top: 100px; 
 }
+
+.slider-bar .rc-slider-track {
+    background-color: #046845;
+}
+
+.slider-bar .rc-slider-handle {
+    border-color: #F0AA06;
+}
