@@ -1,4 +1,5 @@
 import dash
+<<<<<<< Updated upstream
 from dash import html, Input, Output, State, callback,dcc
 import json
 from dash.exceptions import PreventUpdate
@@ -9,11 +10,16 @@ parent_dir = os.path.abspath(os.path.join(parent_dir, '..'))
 sys.path.insert(0, parent_dir)
 from Backend.pricesimulation.main import run_simulation
 
+=======
+from dash import html
+import requests
+>>>>>>> Stashed changes
 
 dash.register_page(__name__)
 
 # Define the layout for the pricing simulation page
 layout = html.Div([
+<<<<<<< Updated upstream
     html.H2("Pricing Simulation"),
     html.Label("Number of Passengers:"),
     dcc.Input(id="input-number-of-passengers", type="number", value=10000),
@@ -93,3 +99,10 @@ def run_and_display_simulation(n_clicks, num_passengers, initial_ticket_price, c
     ])
 
     return output_html
+=======
+    html.H1('Pricing simulation'),
+    html.Div()
+])
+
+
+>>>>>>> Stashed changes

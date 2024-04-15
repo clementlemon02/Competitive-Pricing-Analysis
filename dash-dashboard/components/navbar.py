@@ -5,10 +5,10 @@ from dash import html, callback, Input, Output
 # CSS styles for navbar
 nav_text_default = {'color': '#3A3B3C', 'text-align': 'center'}
 nav_text_selected = {'color': '#FFFFFF', 'text-align': 'center'}
-nav_button_default = {'border-style': 'solid', 'margin-right': '15px', 'width': '150px', 'border-radius': '25px',
+nav_button_default = {'border-style': 'solid', 'border-color': '#F0AA06', 'margin-right': '15px', 'width': '150px', 'border-radius': '25px',
                       'border-width': 'medium'}
-nav_button_selected = {'border-style': 'solid', 'margin-right': '15px', 'width': '150px', 'border-radius': '25px',
-                       'background-color': '#333333', 'border-width': 'medium'}
+nav_button_selected = {'border-style': 'solid', 'border-color': '#8ABA3D', 'margin-right': '15px', 'width': '150px', 'border-radius': '25px',
+                       'background-color': '#046845', 'border-width': 'medium'}
 
 # Create Navigation Bar
 navbar = dbc.Navbar(
@@ -36,10 +36,9 @@ navbar = dbc.Navbar(
                 )
             )
         ],
-        style={'font-size': '18px', 'height': 'auto', 'background-color': '#fafafa'},
+      #  style={'font-size': '18px', 'height': 'auto', 'background-color': '#fafafa'},
         fluid=True
-    ),
-    style={'padding': '0px', 'position': 'fixed', 'top': '0', 'width': '100%', 'z-index': '1000'}  # Fix navbar position
+    )
 )
 
 
