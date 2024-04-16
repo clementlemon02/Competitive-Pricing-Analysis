@@ -102,4 +102,3 @@ def run_and_display_simulation(n_clicks, num_passengers, initial_ticket_price, c
     return output_html
 
 
-

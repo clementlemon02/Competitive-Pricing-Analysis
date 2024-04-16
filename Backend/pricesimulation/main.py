@@ -24,18 +24,18 @@ def run_simulation(data):
 
     # Access model data and visualize results
     optimized_parameters = model.get_optimized_parameters()
-    print("Average Competitor Price:", "S$", round(model.average_competitor_price,2))
-    print("Optimized Ticket Price:", "S$", round(optimized_parameters["Optimized_Ticket_Price"],2))
-    print("Expected Passengers:", optimized_parameters["Expected_Passengers"])
-    print("Expected Revenue:", "S$", round(round(optimized_parameters["Optimized_Ticket_Price"], 2) * optimized_parameters["Expected_Passengers"],2))
-    print("Tickets Purchased:", optimized_parameters["Tickets_Purchased"])
-    print("Tickets Not Purchased:", optimized_parameters["Tickets_Not_Purchased"])
+    # print("Average Competitor Price:", "S$", round(model.average_competitor_price,2))
+    # print("Optimized Ticket Price:", "S$", round(optimized_parameters["Optimized_Ticket_Price"],2))
+    # print("Expected Passengers:", optimized_parameters["Expected_Passengers"])
+    # print("Expected Revenue:", "S$", round(round(optimized_parameters["Optimized_Ticket_Price"], 2) * optimized_parameters["Expected_Passengers"],2))
+    # print("Tickets Purchased:", optimized_parameters["Tickets_Purchased"])
+    # print("Tickets Not Purchased:", optimized_parameters["Tickets_Not_Purchased"])
 
-    model.plot_utility()
+    # model.plot_utility()
 
 
-    # Extract the data from the DataCollector
-    data = model.datacollector.get_agent_vars_dataframe()
+    # # Extract the data from the DataCollector
+    # data = model.datacollector.get_agent_vars_dataframe()
 
     ## by front end: we need to add a return statement to print this out at the webpage
     return optimized_parameters
