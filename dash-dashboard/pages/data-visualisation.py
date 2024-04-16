@@ -31,10 +31,18 @@ common_layout = dict(
 # Fetch min and max prices from the database
 min_price_query = "SELECT MIN(price) FROM competitor.competitor_prices_dataset"
 max_price_query = "SELECT MAX(price) FROM competitor.competitor_prices_dataset"
+#1. competitor price
+# Fetch min and max prices from the database
+min_price_query = "SELECT MIN(price) FROM competitor.competitor_prices_dataset"
+max_price_query = "SELECT MAX(price) FROM competitor.competitor_prices_dataset"
 
 min_price_result = pd.read_sql(min_price_query, connection)
 max_price_result = pd.read_sql(max_price_query, connection)
+min_price_result = pd.read_sql(min_price_query, connection)
+max_price_result = pd.read_sql(max_price_query, connection)
 
+min_price = min_price_result.iloc[0][0]
+max_price = max_price_result.iloc[0][0]
 min_price = min_price_result.iloc[0][0]
 max_price = max_price_result.iloc[0][0]
 
@@ -99,7 +107,19 @@ tourist_nationality_query = '''
    SELECT Year,'Place of Residence' AS Country,visitor_arrivals
    FROM tourism.tourist_nationalities;
 '''
+tourist_nationality_query = '''
+   SELECT Year,'Place of Residence' AS Country,visitor_arrivals
+   FROM tourism.tourist_nationalities;
+'''
 
+tourist_volume_query = '''
+    SELECT 
+    SUBSTRING(date, 1, 3) AS month,
+    SUBSTRING(date, 5, 8) AS year, 
+    visitor_arrivals
+FROM 
+   tourism.tourist_arrival;
+'''
 tourist_volume_query = '''
     SELECT 
     SUBSTRING(date, 1, 3) AS month,
@@ -123,7 +143,25 @@ GROUP BY
 ORDER BY 
     Year DESC;
 '''
+tourist_agegroup_query= '''
+SELECT 
+    SUBSTR(month, 1, 4) AS Year,
+	ROUND(AVG(y_prop), 2) AS Avg_Y_Prop,
+    ROUND(AVG(a_prop), 2) AS Avg_A_Prop
+FROM
+   tourism.tourist_age_group
+WHERE 
+    SUBSTR(month, 1, 4) BETWEEN '2021' AND '2024'
+GROUP BY 
+    SUBSTR(month, 1, 4)
+ORDER BY 
+    Year DESC;
+'''
 
+# Fetching data from SQL and closing connection
+tn_df = pd.read_sql(tourist_nationality_query, connection)
+tv_df = pd.read_sql(tourist_volume_query, connection)
+ta_df = pd.read_sql(tourist_agegroup_query, connection)
 # Fetching data from SQL and closing connection
 tn_df = pd.read_sql(tourist_nationality_query, connection)
 tv_df = pd.read_sql(tourist_volume_query, connection)
@@ -131,13 +169,24 @@ ta_df = pd.read_sql(tourist_agegroup_query, connection)
 
 #Convert data format
 melted_ta_df = pd.melt(ta_df, id_vars='Year', var_name='Age_Group', value_name='Average_Proportion')
+#Convert data format
+melted_ta_df = pd.melt(ta_df, id_vars='Year', var_name='Age_Group', value_name='Average_Proportion')
 
+months_order = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+tv_df['month'] = pd.Categorical(tv_df['month'], categories=months_order, ordered=True)
 months_order = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
 tv_df['month'] = pd.Categorical(tv_df['month'], categories=months_order, ordered=True)
 
 # Group data by month and calculate the average visitors for each month
 seasonal_data = tv_df.groupby('month')['visitor_arrivals'].mean().reset_index()
+# Group data by month and calculate the average visitors for each month
+seasonal_data = tv_df.groupby('month')['visitor_arrivals'].mean().reset_index()
 
+# Plot the seasonal data using Plotly Express
+tv_fig = px.line(seasonal_data, x='month', y='visitor_arrivals', title='Seasonal Visitor Arrivals Overview from 2008 to 2024',
+              labels={'month': 'Month', 'Visitor Arrivals': 'Average Visitors'})
+tv_fig.update_layout(common_layout)
+tv_fig.update_traces(line=dict(color='#046845')) 
 # Plot the seasonal data using Plotly Express
 tv_fig = px.line(seasonal_data, x='month', y='visitor_arrivals', title='Seasonal Visitor Arrivals Overview from 2008 to 2024',
               labels={'month': 'Month', 'Visitor Arrivals': 'Average Visitors'})
@@ -147,7 +196,14 @@ tv_fig.update_traces(line=dict(color='#046845'))
 tn_fig = px.strip(tn_df, x='Year', y='visitor_arrivals', color='Country',
                   hover_name='Country', log_x=True, 
                   title='Number of Visitors by Country and Year')
+tn_fig = px.strip(tn_df, x='Year', y='visitor_arrivals', color='Country',
+                  hover_name='Country', log_x=True, 
+                  title='Number of Visitors by Country and Year')
 
+tn_fig.update_layout(common_layout,
+                     yaxis={'categoryorder': 'total ascending'},
+                     xaxis_title='Year',
+                     yaxis_title='Number of Visitor Arrivals')
 tn_fig.update_layout(common_layout,
                      yaxis={'categoryorder': 'total ascending'},
                      xaxis_title='Year',
@@ -156,7 +212,12 @@ tn_fig.update_layout(common_layout,
 ta_fig = px.bar(melted_ta_df, y='Year', x='Average_Proportion', color='Age_Group', barmode='stack', 
                 title='Average Proportion of Youth and Adult Individuals Between 2021 and 2024',
                 color_discrete_sequence=['#046845', '#f0aa06'])
+ta_fig = px.bar(melted_ta_df, y='Year', x='Average_Proportion', color='Age_Group', barmode='stack', 
+                title='Average Proportion of Youth and Adult Individuals Between 2021 and 2024',
+                color_discrete_sequence=['#046845', '#f0aa06'])
 
+ta_fig.update_layout(common_layout)
+ta_fig.for_each_trace(lambda t: t.update(name="Youth" if t.name == "Avg_Y_Prop" else "Adult"))
 ta_fig.update_layout(common_layout)
 ta_fig.for_each_trace(lambda t: t.update(name="Youth" if t.name == "Avg_Y_Prop" else "Adult"))
 
@@ -164,19 +225,50 @@ ta_fig.for_each_trace(lambda t: t.update(name="Youth" if t.name == "Avg_Y_Prop" 
 #4. revenue
 sales_by_month_query = '''
     SELECT * 
-    FROM sales.sales_by_month 
+    FROM mflg.sales_by_month 
+'''
+
+sales_by_month_query_b2c = '''
+    SELECT Month, B2C
+    FROM mflg.sales_by_month 
+'''
+
+sales_by_month_query_otc = '''
+    SELECT Month, OTC
+    FROM mflg.sales_by_month 
 '''
 monthly_revenue_df = pd.read_sql(sales_by_month_query, connection)
-monthly_revenue_fig = px.line(monthly_revenue_df, x='Month', y='Total', title='Monthly Revenue')
+monthly_revenue_b2c_df = pd.read_sql(sales_by_month_query_b2c, connection)
+monthly_revenue_otc_df = pd.read_sql(sales_by_month_query_otc, connection)
+
+# Create df grouped by month to obtain data for different years 
+monthly_revenue_df['Month'] = pd.to_datetime(monthly_revenue_df['Month'], format='%b-%y')
+monthly_revenue_df['month'] = monthly_revenue_df['Month'].dt.month_name()
+monthly_revenue_df['Year'] = monthly_revenue_df['Month'].dt.year
+#remove months without complete years
+to_remove = [2021, 2024] 
+# Create a boolean mask using isin()
+mask = monthly_revenue_df['Year'].isin(to_remove)
+
+# Filter the DataFrame using the mask to obtain the points with all 12 mths
+year_grp_revenue = monthly_revenue_df[~mask]
+
+monthly_revenue_fig = px.line(monthly_revenue_df, x='Month', y='Total', title='Monthly Revenue (View by Revenue Source)')
+monthly_revenue_div = dcc.Graph(figure=monthly_revenue_fig, id='monthly-revenue-fig') #assign div 
 monthly_revenue_fig.update_layout(common_layout)
 monthly_revenue_fig.update_traces(line=dict(color='#046845')) 
+
+year_revenue_fig = px.line(year_grp_revenue, x='Month', y='Total', title='Monthly Revenue (View by Year)')
+year_revenue_div = dcc.Graph(figure=year_revenue_fig, id='yearly-revenue-fig') #assign div 
+year_revenue_fig.update_layout(common_layout)
+year_revenue_fig.update_traces(line=dict(color='#046845')) 
 
 # for Dropdown and layout
 # Define the KPI components and their associated graphs
 kpi_components = {
     "Occupancy Rate": {"Histogram of Hourly Ridership":rh_fig,"Ridership Nationalities":nationality_fig},
     "Competitors Prices": {},
-    "Revenue": {"Monthly Revenue": monthly_revenue_fig},
+    "Revenue": {},
     "Tourism":{"Visitors Arrival": tv_fig,"Visitors Nationality":tn_fig,"Age Group Proportion of Visitors":ta_fig}
 }
 
@@ -245,6 +337,8 @@ def update_boxplot(price_range):
 
     # Convert 'attraction' column to categorical data type
     cp_df['attraction'] = cp_df['attraction'].astype('category')
+    # Convert 'attraction' column to categorical data type
+    cp_df['attraction'] = cp_df['attraction'].astype('category')
 
     # Create box plot
     cp_fig = px.strip(cp_df, x='attraction', y='price', color='attraction', title='Prices by Attraction',
@@ -259,7 +353,21 @@ def update_boxplot(price_range):
     cp_fig.add_hline(y=17, line=dict(color='#F0AA06', width=2, dash='dash'), annotation_text='Child',
                      annotation_position='bottom right')
     cp_fig.update_layout(common_layout)
+    # Create box plot
+    cp_fig = px.strip(cp_df, x='attraction', y='price', color='attraction', title='Prices by Attraction',
+                      hover_data=['ticket', 'price'],
+                      labels={
+                          "attraction": "Attraction",
+                          "price": "Price"
+                      })
+# Add horizontal lines for adult and child prices
+    cp_fig.add_hline(y=20, line=dict(color='#046845', width=2, dash='dash'), annotation_text='Adult',
+                     annotation_position='top right')
+    cp_fig.add_hline(y=17, line=dict(color='#F0AA06', width=2, dash='dash'), annotation_text='Child',
+                     annotation_position='bottom right')
+    cp_fig.update_layout(common_layout)
     
+    return cp_fig
     return cp_fig
 
 

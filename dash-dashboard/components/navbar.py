@@ -29,7 +29,7 @@ navbar = dbc.Navbar(
                     dbc.Nav([
                         dbc.NavItem(dbc.NavLink("Introduction", href="/", id="intro_text"),
                                     id="intro_button"),
-                        dbc.NavItem(dbc.NavLink("Visualisation", href="/data-visualisation", id="data_text"),
+                        dbc.NavItem(dbc.NavLink("Dashboard", href="/data-visualisation", id="data_text"),
                                     id="data_button"),
                         dbc.NavItem(dbc.NavLink("Simulation", href="/pricing-simulation", id="pricing_text"),
                                     id="pricing_button")

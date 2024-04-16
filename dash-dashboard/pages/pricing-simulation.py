@@ -30,9 +30,9 @@ layout = html.Div([
         html.Div("Competitors' Prices (S$, separated by comma):", style={'display': 'inline-block', 'margin-right': '10px'}),
         dcc.Input(id="input-competitors-price", type="text", placeholder="10, 30, 48, ..."),
     ], style={'margin-bottom': '10px'}),
-    html.Button("Run Simulation", id="run-simulation-button", n_clicks=0, className="mt-3"),
+    html.Button("Run Simulation", id="run-simulation-button", n_clicks=0, className="nav-text-selected nav-button-selected", style={'margin-bottom': '20px'}),
     html.Div(id="simulation-output")
-], className="mt-3")
+])
 
 
 @callback(
@@ -58,11 +58,14 @@ def run_and_display_simulation(n_clicks, num_passengers, initial_ticket_price, c
     }
     model_output = run_simulation(test_data)
 
-
+    # Access model data and visualize results
+    optimized_parameters = model_output['optimized_parameters']
+    grid_state = model_output['grid_state']
+    
     # Create a bar chart trace
     bar_chart_trace = go.Bar(
     x=['Purchased Tickets', 'Did Not Purchase Tickets'],
-    y=[model_output["Tickets_Purchased"], model_output["Tickets_Not_Purchased"]],
+    y=[optimized_parameters["Tickets_Purchased"], optimized_parameters["Tickets_Not_Purchased"]],
     marker=dict(color=['#046845'])
     )
 
@@ -78,24 +81,17 @@ def run_and_display_simulation(n_clicks, num_passengers, initial_ticket_price, c
     # Create a figure object
     fig = go.Figure(data=[bar_chart_trace], layout=layout)
 
-
-    # You can modify this to display any specific output from the model if needed
-
-    # Access model data and visualize results
-    #optimized_parameters = model_output['optimized_parameters']
-    #average_competitor_price = model_output['average_competitor_price']
-    
     # Construct HTML to display model output
     output_html = html.Div([
         html.Div(),
         html.H1("Simulation Results"),
         html.Div(),
-        #html.P(f"Average Competitor Price: S$ {round(average_competitor_price, 2)}"),
-        html.P(f"Optimized Ticket Price: S$ {round(model_output['Optimized_Ticket_Price'], 2)}"),
-        html.P(f"Expected Passengers: {model_output['Expected_Passengers']}"),
-        html.P(f"Expected Revenue: S$ {round(round(model_output['Optimized_Ticket_Price'], 2) * model_output['Expected_Passengers'], 2)}"),
-        html.P(f"Tickets Purchased: {model_output['Tickets_Purchased']}"),
-        html.P(f"Tickets Not Purchased: {model_output['Tickets_Not_Purchased']}"),
+        # html.P(f"Average Competitor Price: S$ {round(average_competitor_price, 2)}"),
+        html.P(f"Optimized Ticket Price: S$ {round(optimized_parameters['Optimized_Ticket_Price'], 2)}"),
+        html.P(f"Expected Passengers: {optimized_parameters['Expected_Passengers']}"),
+        html.P(f"Expected Revenue: S$ {round(round(optimized_parameters['Optimized_Ticket_Price'], 2) * optimized_parameters['Expected_Passengers'], 2)}"),
+        html.P(f"Tickets Purchased: {optimized_parameters['Tickets_Purchased']}"),
+        html.P(f"Tickets Not Purchased: {optimized_parameters['Tickets_Not_Purchased']}"),
         html.Div([dcc.Graph(id='ticket-purchase-chart', figure=fig)])
     ])
 
