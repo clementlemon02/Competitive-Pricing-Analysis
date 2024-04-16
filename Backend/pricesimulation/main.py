@@ -23,10 +23,17 @@ def run_simulation(data):
                           grid_width = input_grid_width,
                           grid_height = input_grid_height
                         )
+    grid_state = []
 
     # Run the model for a fixed number of steps
     for i in np.arange(10):  
         model.step()
+        # Capture Grid State
+        step_state = [
+        {"x": agent.pos[0], "y": agent.pos[1], "purchased": agent.ticket_purchased}
+        for agent in model.schedule.agents
+        ]
+        grid_state.append(step_state)
 
     # Access model data and visualize results
     optimized_parameters = model.get_optimized_parameters()
@@ -44,7 +51,7 @@ def run_simulation(data):
     data = model.datacollector.get_agent_vars_dataframe()
 
     ## by front end: we need to add a return statement to print this out at the webpage
-    return optimized_parameters
+    return {"optimized_paramters": optimized_parameters, "grid_state": grid_state}
 
 '''
 instead of a pop out window, we will transfer this code to the frontend code to display the plot in the html webpage
