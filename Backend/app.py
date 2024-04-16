@@ -10,12 +10,13 @@ load_dotenv()
 
 app = Flask(__name__)
 
-DB_USER = os.getenv('DB_USER')
-DB_PASSWORD = os.getenv('DB_PASSWORD')
-DB_HOST = os.getenv('DB_HOST')
-DB_NAME = os.getenv('DB_NAME')
+DB_USER = os.getenv("MYSQL_USER")
+DB_PASSWORD = os.getenv("MYSQL_PASSWORD")
+DB_HOST = os.getenv("MYSQL_HOST")
+DB_PORT = 3306
+DB_NAME = os.getenv("MYSQL_DATABASE")
 
-engine = create_engine(f'mysql://{DB_USER}:{DB_PASSWORD}@{DB_HOST}/{DB_NAME}')
+engine = create_engine(f"mysql://{DB_USER}:{DB_PASSWORD}@{DB_HOST}:{DB_PORT}/{DB_NAME}")
 SALES_QUERY = text("SELECT * FROM sales")
 VISITOR_QUERY = text("SELECT * FROM annual_visitor")
 RIDERSHIP_QUERY = text("SELECT * FROM ridership")
@@ -32,6 +33,14 @@ def execute_sql_query(query):
         result = connection.execute(query)
         return result.fetchall()
 
+def test_database_connection():
+    try:
+        with engine.connect() as connection:
+            return True
+    except Exception as e:
+        print("Failed to connect to the database:", e)
+        return False
+    
 @app.route('/health', methods=['GET'])
 def health():
     return jsonify({"status": "healthy"})
@@ -108,4 +117,8 @@ def run_model_endpoint():
     return jsonify(output_data)
 
 if __name__ == "__main__":
+    if test_database_connection():
+        print("Successfully connected to the database!")
+    else:
+        print("Failed to connect to the database.")
     app.run(host='0.0.0.0')
