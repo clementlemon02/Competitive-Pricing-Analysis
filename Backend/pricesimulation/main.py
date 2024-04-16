@@ -1,9 +1,13 @@
 from .model import SkyHelixModel
+# from model import SkyHelixModel
+import matplotlib
+matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 import numpy as np
 from mesa.batchrunner import batch_run
 import pandas as pd
 import json
+import math
 
 import sys
 import os
@@ -12,10 +16,12 @@ sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 print(sys.path)
 
 def run_simulation(data):
-        
+    input_grid_width = input_grid_height = math.ceil(math.sqrt(data['input_number_of_passengers']))   
     model = SkyHelixModel(num_passengers = data['input_number_of_passengers'],
                           initial_ticket_price = data['input_initial_ticket_price'],
                           competitors_price = data['input_competitors_price'],
+                          grid_width = input_grid_width,
+                          grid_height = input_grid_height
                         )
 
     # Run the model for a fixed number of steps
@@ -55,11 +61,14 @@ instead of a pop out window, we will transfer this code to the frontend code to 
 '''
 
 
+
 if __name__ == "__main__":
     # Example usage
     test_data = {
         'input_number_of_passengers': 10000,
         'input_initial_ticket_price': 20,
-        'input_competitors_price': [10, 30, 48, 49.5, 30, 23, 45.6, 12, 40, 42, 34.05, 40, 45.6]
+        'input_competitors_price': [10, 30, 48, 49.5, 30, 23, 45.6, 12, 40, 42, 34.05, 40, 45.6],
+        'input_grid_width': 100,
+        'input_grid_height': 100
     }
     run_simulation(test_data)
