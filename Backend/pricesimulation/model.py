@@ -1,22 +1,26 @@
 from mesa import Agent, Model
-from mesa.space import MultiGrid
+from mesa.space import MultiGrid, SingleGrid
 from mesa.time import RandomActivation
 from mesa.datacollection import DataCollector
 from .agent import PassengerAgent
+# from agent import PassengerAgent
+import matplotlib
+matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 import seaborn as sns
 import numpy as np
+import random
 
 class SkyHelixModel(Model):
-    def __init__(self, num_passengers, initial_ticket_price,competitors_price):
+    def __init__(self, num_passengers, initial_ticket_price,competitors_price, grid_width, grid_height):
         super().__init__()
         self.num_passengers = num_passengers
         self.ticket_price = initial_ticket_price
         self.initial_ticket_price = initial_ticket_price
         self.competitors_price = competitors_price
         self.average_competitor_price = 0
-        self.grid_width = 1
-        self.grid_height = 1
+        self.grid_width = grid_width
+        self.grid_height = grid_height
         self.demographic_densities = {
             "Adult": 0.5,
             "Senior": 0.2,
@@ -24,21 +28,46 @@ class SkyHelixModel(Model):
         }
         self.total_revenue = 0
         self.total_tickets_sold = 0
-        self.grid = MultiGrid(self.grid_width, self.grid_height, True)
+        # self.grid = MultiGrid(self.grid_width, self.grid_height, True)
+        self.grid = SingleGrid(self.grid_width, self.grid_height, True)
         self.schedule = RandomActivation(self)
         self.datacollector = DataCollector(
             agent_reporters={"Ticket_Purchased": lambda a: a.ticket_purchased}
         )
         self.create_agents()
 
+    # def create_agents(self):
+    #     # Now use self.demographic_densities directly
+    #     total_density = sum(self.demographic_densities.values())
+    #     for demographic, density in self.demographic_densities.items():
+    #         num_agents = int(self.num_passengers * (density / total_density))
+    #         for i in range(num_agents):
+    #             x = self.random.randrange(self.grid.width)
+    #             y = self.random.randrange(self.grid.height)
+    #             agent = PassengerAgent(i, self, demographic)
+    #             self.grid.place_agent(agent, (x, y))
+    #             self.schedule.add(agent)
+
     def create_agents(self):
-        # Now use self.demographic_densities directly
+        # Create a list of all possible coordinates on the grid
+        all_coordinates = [(x, y) for x in range(self.grid.width) for y in range(self.grid.height)]
+        random.shuffle(all_coordinates)  # Shuffle the list randomly
+
+        # Iterate through demographic densities
         total_density = sum(self.demographic_densities.values())
         for demographic, density in self.demographic_densities.items():
             num_agents = int(self.num_passengers * (density / total_density))
+            
+            # Assign unique coordinates to each agent
             for i in range(num_agents):
-                x = self.random.randrange(self.grid.width)
-                y = self.random.randrange(self.grid.height)
+                if all_coordinates:
+                    # Pop a coordinate from the shuffled list
+                    x, y = all_coordinates.pop()
+                else:
+                    # If no more unique coordinates available, break the loop
+                    break
+                
+                # Create and place the agent
                 agent = PassengerAgent(i, self, demographic)
                 self.grid.place_agent(agent, (x, y))
                 self.schedule.add(agent)
@@ -79,9 +108,9 @@ class SkyHelixModel(Model):
     # Include ticket purchase counts directly in the optimized parameters
       tickets_purchased, tickets_not_purchased = self.get_ticket_counts()
       optimized_parameters = {
-        "Optimized_Ticket_Price": self.ticket_price,
+        "Optimized_Ticket_Price": round(self.ticket_price,2),
         "Expected_Passengers": tickets_purchased,  # This now directly reflects tickets purchased
-        "Expected_Revenue": self.total_revenue,
+        "Expected_Revenue": round(round(self.ticket_price,2)*tickets_purchased,2),
         "Tickets_Purchased": tickets_purchased,
         "Tickets_Not_Purchased": tickets_not_purchased
     }
