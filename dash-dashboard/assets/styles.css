@@ -1,0 +1,80 @@
+/* CSS styles for navbar */
+.nav-text-default {
+    color:#3A3B3C;
+    text-align: center;
+}
+
+.nav-text-selected {
+    color: #FFFFFF;
+    text-align: center;
+}
+
+.nav-button-default {
+    border-style: solid;
+    margin-right: 15px;
+    width: 150px;
+    border-radius: 25px;
+    border-width: medium;
+}
+
+.nav-button-selected {
+    border-style: solid;
+    margin-right: 15px;
+    width: 150px;
+    border-radius: 25px;
+    background-color: #046845;
+    border-width: medium;
+    border-color: #8ABA3D;
+}
+
+.nav-button-default:hover,
+.nav-button-selected:hover {
+    background-color: #F0AA06;
+    border-color: #F0AA06;
+    color: #3A3B3C;
+}
+
+.navbar-brand {
+    font-weight: bold;
+    font-size: 35px;
+    color: #3A3B3C;
+    padding-left: 30px;
+    vertical-align: middle;
+    font-family: 'Lora', serif;
+}
+
+ .navbar {
+    position: fixed;
+    top: 0;
+    width: 100%;
+    background-color: #333;
+    z-index: 1000; /* Ensure navbar is above other content */
+ }
+  
+
+p {
+    font-family: 'Lora', serif;
+    font-size: 18px;
+}
+
+h1 {
+    font-family: 'Lora', serif;
+    font-size: 32px;
+} 
+
+h2 {
+    font-family: 'Lora', serif;
+    font-size: 26px;
+}  
+
+#page-content {
+    margin-top: 100px; 
+}
+
+.slider-bar .rc-slider-track {
+    background-color: #046845;
+}
+
+.slider-bar .rc-slider-handle {
+    border-color: #F0AA06;
+}
