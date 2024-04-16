@@ -12,19 +12,10 @@ dash.register_page(__name__, title='MFLG')
 
 # Establish database connection
 connection = mysql.connector.connect(
-    host='127.0.0.1',
+    host='localhost',
     port='3306',
     user='root',
-    password='pwd'
-)
-
-common_layout = dict(
-    plot_bgcolor='#E6FAD5',  # Change background color here
-    font=dict(family='Lora', size=18),
-    xaxis=dict(tickfont=dict(family='Lora', size=14)),
-    yaxis=dict(tickfont=dict(family='Lora', size=14)),
-    legend=dict(font=dict(family='Lora', size=14))
-    #paper_bgcolor='#FCFFF9'  # Change paper (plot area) color here
+    password=''
 )
 
 #1. competitor price
