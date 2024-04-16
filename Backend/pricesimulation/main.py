@@ -51,7 +51,7 @@ def run_simulation(data):
     # data = model.datacollector.get_agent_vars_dataframe()
 
     ## by front end: we need to add a return statement to print this out at the webpage
-    return {"optimized_paramters": optimized_parameters, "grid_state": grid_state}
+    return {"optimized_parameters": optimized_parameters, "grid_state": grid_state}
 
 '''
 instead of a pop out window, we will transfer this code to the frontend code to display the plot in the html webpage
