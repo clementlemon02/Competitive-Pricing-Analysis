@@ -1,6 +1,6 @@
 import os
-from urllib import request
-from flask import Flask, jsonify
+# from urllib import request
+from flask import Flask, jsonify, request
 from sqlalchemy import create_engine, text
 from dotenv import load_dotenv
 

@@ -14,7 +14,8 @@ app.layout = html.Div(children=[
     id="page-content",
     fluid=True
    )
-])#, style={'zoom':'85%'}) # Set zoom to 85% to accommodate small screens
+], style = {'zoom':'90%'})
+
 
 if __name__ == '__main__':
     app.run_server(host='0.0.0.0',debug=True,port=8051)
