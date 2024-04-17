@@ -43,7 +43,7 @@ layout = html.Div([
     html.P(student_text_1),
     html.P(student_text_2),
     html.P(student_text_3),
-    html.P("Check out the Mount Faber Leisure Group website: "), 
+    html.P("Check out the Mount Faber Leisure Group website: "),
     dbc.Button("Mount Faber Leisure Group", href="https://www.mountfaberleisure.com/", target="_blank", color="secondary", className="nav-text-selected nav-button-selected mr-1")
-], className='container py-3')  
+], className='intro')  
 
