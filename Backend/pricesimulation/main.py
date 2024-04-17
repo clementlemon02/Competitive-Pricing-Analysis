@@ -1,5 +1,5 @@
 from .model import SkyHelixModel
-# from model import SkyHelixModel
+#from model import SkyHelixModel
 import matplotlib
 matplotlib.use('Agg')
 import matplotlib.pyplot as plt
@@ -37,6 +37,7 @@ def run_simulation(data):
 
     # Access model data and visualize results
     optimized_parameters = model.get_optimized_parameters()
+   
     # print("Average Competitor Price:", "S$", round(model.average_competitor_price,2))
     # print("Optimized Ticket Price:", "S$", round(optimized_parameters["Optimized_Ticket_Price"],2))
     # print("Expected Passengers:", optimized_parameters["Expected_Passengers"])

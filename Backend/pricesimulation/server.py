@@ -2,12 +2,17 @@ from mesa.visualization.modules import CanvasGrid
 from mesa.visualization.ModularVisualization import ModularServer
 from mesa.visualization import Slider
 
+import sys
+import os
 
+sys.path.append(os.path.dirname(os.path.abspath(__file__)))
+print(sys.path)
 
-from .model import SkyHelixModel
-# from model import SkyHelixModel
+#from .model import SkyHelixModel
+from model import SkyHelixModel
 import math
 import numpy as np
+
 
 def agent_portrayal(agent):
     portrayal = {"Shape": "circle", "Filled": "true", "r": 0.5}

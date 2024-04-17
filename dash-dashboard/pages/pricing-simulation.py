@@ -1,5 +1,5 @@
 import dash
-from dash import html, Input, Output, State, callback,dcc
+from dash import html, Input, Output, State, callback, dcc
 import json
 from dash.exceptions import PreventUpdate
 import sys
@@ -16,8 +16,8 @@ dash.register_page(__name__)
 
 # Define the layout for the pricing simulation page
 layout = html.Div([
-    html.H1("Pricing Simulation"),
-    html.P("Please Key in your input below."),
+    html.H1("Pricing Simulation for SkyHelix"),
+    html.P("Please key in your input below."),
     html.Div([
         html.Div("Number of Visitors:", style={'display': 'inline-block', 'margin-right': '10px'}),
         dcc.Input(id="input-number-of-passengers", type="number", value=10000),
@@ -33,6 +33,45 @@ layout = html.Div([
     html.Button("Run Simulation", id="run-simulation-button", n_clicks=0, className="nav-text-selected nav-button-selected", style={'margin-bottom': '20px'}),
     html.Div(id="simulation-output")
 ])
+
+#function to create a grid
+
+def create_grid_figure(grid_state):
+    # Convert grid state to x, y, and color
+    x = [cell['x'] for cell in grid_state]
+    y = [cell['y'] for cell in grid_state]
+    colors = ['green' if cell['purchased'] else 'red' for cell in grid_state]
+
+    trace = go.Scatter(
+        x=x,
+        y=y,
+        mode='markers',
+        marker=dict(color=colors, size=8)  # Adjust size as necessary
+    )
+
+    layout = go.Layout(
+        title='Grid Simulation',
+        annotations=[
+            dict(
+                x=0.5,
+                y=1.08, #if changing height of grid, adjust this as well
+                xref='paper',
+                yref='paper',
+                text='Green represents agents that purchased a ticket, and red represents those that did not. <br> Mouse over the points to see the coordinates.',
+                showarrow=False,
+                font=dict(family='Lora', size=14)
+            )
+        ],
+        font=dict(family='Lora', size=18),
+        xaxis=dict(title='X', tickmode='linear', dtick=10),
+        yaxis=dict(title='Y', tickmode='linear', dtick=10),
+        height=800,
+        width=800,
+    )
+
+    return go.Figure(data=[trace], layout=layout)
+
+
 
 
 @callback(
@@ -60,7 +99,12 @@ def run_and_display_simulation(n_clicks, num_passengers, initial_ticket_price, c
 
     # Access model data and visualize results
     optimized_parameters = model_output['optimized_parameters']
-    grid_state = model_output['grid_state']
+    
+    #obtain gride state to produce grid
+    grid_state = model_output['grid_state'][0]
+
+    grid_fig = create_grid_figure(grid_state)
+
     
     # Create a bar chart trace
     bar_chart_trace = go.Bar(
@@ -92,7 +136,16 @@ def run_and_display_simulation(n_clicks, num_passengers, initial_ticket_price, c
         html.P(f"Expected Revenue: S$ {round(round(optimized_parameters['Optimized_Ticket_Price'], 2) * optimized_parameters['Expected_Passengers'], 2)}"),
         html.P(f"Tickets Purchased: {optimized_parameters['Tickets_Purchased']}"),
         html.P(f"Tickets Not Purchased: {optimized_parameters['Tickets_Not_Purchased']}"),
-        html.Div([dcc.Graph(id='ticket-purchase-chart', figure=fig)])
+        html.Div([dcc.Graph(id='ticket-purchase-chart', figure=fig)]),
+        html.Div([dcc.Graph(id='grid-chart', figure=grid_fig)])
+       
     ])
 
     return output_html
+
+
+
+
+
+
+

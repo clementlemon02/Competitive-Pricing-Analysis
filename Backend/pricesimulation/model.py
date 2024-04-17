@@ -3,7 +3,7 @@ from mesa.space import MultiGrid, SingleGrid
 from mesa.time import RandomActivation
 from mesa.datacollection import DataCollector
 from .agent import PassengerAgent
-# from agent import PassengerAgent
+#from agent import PassengerAgent
 import matplotlib
 matplotlib.use('Agg')
 import matplotlib.pyplot as plt
