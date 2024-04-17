@@ -110,7 +110,7 @@ def get_tourist_age_group():
     tourist_age_group = execute_sql_query(TOURIST_AGE_GROUP_QUERY)
     return jsonify(tourist_age_group)
 
-@app.route('/run_model', methods=['POST'])
+@app.route('/pricing-simulation', methods=['POST'])
 def run_model_endpoint():
     input_data = request.json
     output_data = run_simulation(input_data)  

@@ -313,8 +313,6 @@ cp_fig_div = dcc.Graph(id='price-boxplot')
     Output('slider-labels', 'children'), 
     [Input('price-range', 'value')] 
 ) 
-def update_slider_labels(price_range): 
-    return f"Current Selection: {price_range[0]} - {price_range[1]}" 
  
 #Define callback to update box plot based on price range 
 @callback( 
@@ -346,7 +344,7 @@ def update_boxplot(price_range):
                            "attraction": "Attraction", 
                            "price": "Price" 
                        }) 
- # Add horizontal lines for adult and child prices 
+    # Add horizontal lines for adult and child prices 
     cp_fig.add_hline(y=20, line=dict(color='#046845', width=2, dash='dash'), annotation_text='Adult', 
                       annotation_position='top right') 
     cp_fig.add_hline(y=17, line=dict(color='#F0AA06', width=2, dash='dash'), annotation_text='Child', 
