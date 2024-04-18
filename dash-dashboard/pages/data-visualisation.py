@@ -15,11 +15,12 @@ connection = mysql.connector.connect(
     host='127.0.0.1', 
     port='3306', 
     user='root', 
-    password='Alyssa123!' 
+    password='Lks6712281119@' 
 ) 
  
 common_layout = dict( 
-    plot_bgcolor='#E6FAD5',  # Change background color here 
+    plot_bgcolor='#d8efb4',  # Change background color here 
+    paper_bgcolor = '#f7ffea',
     font=dict(family='Lora', size=18), 
     xaxis=dict(tickfont=dict(family='Lora', size=14)), 
     yaxis=dict(tickfont=dict(family='Lora', size=14)), 
@@ -64,12 +65,12 @@ nationality_df = pd.read_sql(nationalities_query, connection)
 rm_df['Date'] = pd.to_datetime(rm_df['Date'], format='%m/%d/%Y') 
 rm_df['Month'] = rm_df['Date'].dt.month_name() 
 rm_df['Year'] = rm_df['Date'].dt.year 
- 
+
 month_order = [calendar.month_name[i] for i in range(1, 13)] 
 rm_df = rm_df.sort_values(by='Month', key=lambda x: pd.Categorical(x, categories=month_order)) 
 monthly_avg = rm_df.groupby(['Month'], as_index=False,sort=False)['Ridership'].mean() 
 rh_df["Proportion"] = rh_df['Percentile'] * 100 
- 
+
 # Create graphs 
 rm_fig = px.line(monthly_avg, x='Month', y='Ridership', title='Monthly Average Ridership') 
 rm_fig_div = dcc.Graph(figure=rm_fig, 
@@ -91,9 +92,16 @@ rh_fig.update_layout(common_layout)
 year_dropdown = dcc.Dropdown( 
                     id='year-dropdown', 
                     options=[{'label': year, 'value': year} for year in rm_df['Year'].unique()], 
-                    value=[rm_df['Year'].max()],  # Default to the minimum year 
-                    multi=True  # Allow multiple selections 
-) 
+                    value= [pd.to_datetime(x, format='%Y').year for x in ['2022','2023']],
+                    multi=True,
+                    style={
+                        'color': '#3A3B2C',               # Default text color
+                        'backgroundColor': '#d8efb4',    # Dropdown background color
+                        'borderColor': 'black',
+                        'borderWidth': 'medium',
+                        'fontWeight': 'bold'
+                    }
+)
  
 #3. Tourism data  
 #Your SQL query to fetch data 
@@ -165,17 +173,17 @@ ta_fig.for_each_trace(lambda t: t.update(name="Youth" if t.name == "Avg_Y_Prop" 
 #4. revenue 
 sales_by_month_query = ''' 
     SELECT *  
-    FROM mflg.sales_by_month  
+    FROM sales.sales_by_month  
 ''' 
  
 sales_by_month_query_b2c = ''' 
     SELECT Month, B2C 
-    FROM mflg.sales_by_month  
+    FROM sales.sales_by_month  
 ''' 
  
 sales_by_month_query_otc = ''' 
     SELECT Month, OTC 
-    FROM mflg.sales_by_month  
+    FROM sales.sales_by_month  
 ''' 
 monthly_revenue_df = pd.read_sql(sales_by_month_query, connection) 
 monthly_revenue_b2c_df = pd.read_sql(sales_by_month_query_b2c, connection) 
@@ -215,21 +223,42 @@ kpi_components = {
 kpi_dropdown = dcc.Dropdown( 
     id="kpi-dropdown", 
     options=[{"label": kpi, "value": kpi} for kpi in kpi_components.keys()], 
-    value=list(kpi_components.keys())[0]  # Default to the first KPI component 
-) 
+    value=list(kpi_components.keys())[0],  # Default to the first KPI component 
+    style={
+        'color': '#3A3B2C',               # Default text color
+        'backgroundColor': '#d8efb4',    # Dropdown background color
+        'borderColor': 'black',
+        'borderWidth': 'medium',
+        'fontWeight': 'bold'
+    }
+)
  
  
 revenue_type_dropdown = dcc.Dropdown( 
         id="revenue-type-dropdown", 
         options=[{"label": revenue_type, "value": revenue_type} for revenue_type in ["B2C", "OTC", "Total"]], 
-        value="OTC"  # Default to total revenue  
+        value="OTC",  # Default to total revenue
+        style={
+        'color': '#3A3B2C',               # Default text color
+        'backgroundColor': '#d8efb4',    # Dropdown background color
+        'borderColor': 'black',
+        'borderWidth': 'medium',
+        'fontWeight': 'bold'
+        }
     ) 
  
 #dropdown for year  
 year_revenue_dropdown = dcc.Dropdown( 
         id="year-revenue-dropdown", 
         options=[{"label": year, "value": year} for year in ["2022", "2023"]], 
-        value="2023"  # Default to 2023 
+        value="2023",  # Default to 2023
+        style={
+        'color': '#3A3B2C',               # Default text color
+        'backgroundColor': '#d8efb4',    # Dropdown background color
+        'borderColor': 'black',
+        'borderWidth': 'medium',
+        'fontWeight': 'bold'
+    }
     ) 
  
 #update graph to show different revenue types  
@@ -284,11 +313,10 @@ placeholder_graphs = [
 layout = html.Div([ 
     html.H1('KPI Dashboard'), 
     kpi_dropdown, 
+    html.Br(),
     html.Div(id="graphs-container", children=placeholder_graphs), 
     html.Br(), 
     # Second dropdown within one of the components 
-    html.Div(year_dropdown, id='rm-dropdown-container', style={'display': 'none'}), 
-    html.Br(), 
     html.Div(revenue_type_dropdown, id='revenue-dropdown-container', style={'display': 'none'}), 
     html.Br(), 
     html.Div(year_revenue_dropdown, id='year-revenue-dropdown-container', style={'display': 'none'}) 

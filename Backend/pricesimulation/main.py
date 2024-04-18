@@ -8,6 +8,7 @@ from mesa.batchrunner import batch_run
 import pandas as pd
 import json
 import math
+import random
 
 import sys
 import os
@@ -24,7 +25,22 @@ def run_simulation(data):
                           grid_height = input_grid_height
                         )
     grid_state = []
+    agents = model.schedule.agents
 
+    # Set all agents' purchased status to False initially
+    initial_state = [
+        {"x": agent.pos[0], "y": agent.pos[1], "purchased": False}
+        for agent in agents
+    ]
+
+    # Randomly select one agent to set 'purchased' to True
+    random_agent_index = random.randint(0, len(agents) - 1)
+    initial_state[random_agent_index]['purchased'] = True
+
+    # Add initial state to the grid state list
+    grid_state.append(initial_state)
+
+    
     # Run the model for a fixed number of steps
     for i in np.arange(10):  
         model.step()
