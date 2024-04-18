@@ -15,7 +15,7 @@ connection = mysql.connector.connect(
     host='127.0.0.1', 
     port='3306', 
     user='root', 
-    password='Lks6712281119@' 
+    password='pwd' 
 ) 
  
 common_layout = dict( 
@@ -173,17 +173,17 @@ ta_fig.for_each_trace(lambda t: t.update(name="Youth" if t.name == "Avg_Y_Prop" 
 #4. revenue 
 sales_by_month_query = ''' 
     SELECT *  
-    FROM sales.sales_by_month  
+    FROM mflg.sales_by_month  
 ''' 
  
 sales_by_month_query_b2c = ''' 
     SELECT Month, B2C 
-    FROM sales.sales_by_month  
+    FROM mflg.sales_by_month  
 ''' 
  
 sales_by_month_query_otc = ''' 
     SELECT Month, OTC 
-    FROM sales.sales_by_month  
+    FROM mflg.sales_by_month  
 ''' 
 monthly_revenue_df = pd.read_sql(sales_by_month_query, connection) 
 monthly_revenue_b2c_df = pd.read_sql(sales_by_month_query_b2c, connection) 
