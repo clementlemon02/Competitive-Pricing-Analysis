@@ -32,9 +32,9 @@ competitor prices and tourism information.
 
 student_text_3 = """
 On the model visualization page, we will offer business stakeholders the ability to project 
-ticket sales and revenue while adjusting for the number of visitors, experimental product price, 
-and competitors' prices. The model will also suggest optimal pricing to increase product sales 
-and revenue, helping businesses make data-driven decisions on product pricing.
+ticket sales and revenue while adjusting for the number of visitors and experimenting with different prices. 
+The model will also suggest optimal pricing to increase product sales and revenue, helping 
+businesses make data-driven decisions on product pricing.
 """
 
 layout = html.Div([
