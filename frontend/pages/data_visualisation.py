@@ -7,7 +7,7 @@ import plotly.express as px
 import plotly.graph_objects as go 
 from datetime import datetime 
 import calendar 
- 
+
 # Establish database connection 
 connection = mysql.connector.connect( 
     host='127.0.0.1', 
@@ -83,7 +83,6 @@ rh_fig = px.histogram(rh_df, x='Hour', y='Proportion',
 # Customize layout 
 rh_fig.update_layout(common_layout) 
  
- 
 # Dropdown for month average 
 year_dropdown = dcc.Dropdown( 
                     id='year-dropdown', 
@@ -127,12 +126,12 @@ GROUP BY
 ORDER BY  
     Year DESC; 
 ''' 
- 
+
 # Fetching data from SQL
 tn_df = pd.read_sql(tourist_nationality_query, connection) 
 tv_df = pd.read_sql(tourist_volume_query, connection) 
 ta_df = pd.read_sql(tourist_agegroup_query, connection) 
- 
+
 # Convert data format 
 melted_ta_df = pd.melt(ta_df, id_vars='Year', var_name='Age_Group', value_name='Average_Proportion') 
  
@@ -164,7 +163,7 @@ ta_fig = px.bar(melted_ta_df, y='Year', x='Average_Proportion', color='Age_Group
 ta_fig.update_layout(common_layout) 
 ta_fig.for_each_trace(lambda t: t.update(name="Youth" if t.name == "Avg_Y_Prop" else "Adult")) 
  
- 
+
 #4. Revenue 
 sales_by_month_query = ''' 
     SELECT *  
@@ -257,7 +256,6 @@ year_revenue_dropdown = dcc.Dropdown(
     ) 
  
 # Update graph to show different revenue types  
- 
 @callback( 
     Output('monthly-revenue-fig', 'figure'), 
     [Input('revenue-type-dropdown', 'value')] 
@@ -278,9 +276,7 @@ def update_monthly_revenue(selected_revenue_type):
  
     return monthly_revenue_fig 
  
- 
 # Update graph to show revenue from different years 
- 
 @callback( 
     Output('yearly-revenue-fig', 'figure'), 
     [Input('year-revenue-dropdown', 'value')] 
@@ -316,7 +312,7 @@ layout = html.Div([
     html.Br(), 
     html.Div(year_revenue_dropdown, id='year-revenue-dropdown-container', style={'display': 'none'}) 
 ])
- 
+
 slider = dcc.RangeSlider( 
         id='price-range', 
         className='slider-bar', 
@@ -335,6 +331,7 @@ cp_fig_div = dcc.Graph(id='price-boxplot')
     [Input('price-range', 'value')] 
 ) 
  
+
 # Define callback to update box plot based on price range 
 @callback( 
     Output('price-boxplot', 'figure'), 
@@ -431,5 +428,5 @@ def update_monthly_ridership(selected_years):
         year_data = filtered_data[filtered_data['Year'] == year] 
         rm_fig.add_scatter(x=year_data['Month'], y=year_data['Ridership'], mode='lines',
         line=dict(dash='dash'), name=f'Year {year}') 
- 
+
     return rm_fig

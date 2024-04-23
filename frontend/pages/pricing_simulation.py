@@ -11,11 +11,7 @@ from Backend.pricesimulation.main import run_simulation
 import plotly.graph_objects as go 
 import requests 
 import dash
-from dash import html, dcc, callback, Input, Output, State
 import plotly.graph_objects as go
-import requests
-import json
-from dash.exceptions import PreventUpdate
 
 layout = html.Div([
     html.H1("Dynamic Simulation Display"),
@@ -72,21 +68,17 @@ def update_simulation_visualization(n_intervals, simulation_data, current_step_d
 
     current_step = current_step_data['step'] 
     grid_state = simulation_data['grid_state'][current_step]
-
     purchased_x = [cell['x'] for cell in grid_state if cell['purchased']]
     purchased_y = [cell['y'] for cell in grid_state if cell['purchased']]
     not_purchased_x = [cell['x'] for cell in grid_state if not cell['purchased']]
     not_purchased_y = [cell['y'] for cell in grid_state if not cell['purchased']]
-
     fig = go.Figure()
     fig.add_trace(go.Scatter(x=purchased_x, y=purchased_y, mode='markers', marker=dict(color='green', size=10), name='Purchased'))
     fig.add_trace(go.Scatter(x=not_purchased_x, y=not_purchased_y, mode='markers', marker=dict(color='red', size=10), name='Not Purchased'))
     fig.update_layout(title=f'Step {current_step}', xaxis=dict(range=[-1, 100]), yaxis=dict(range=[-1, 100]),paper_bgcolor = '#f7ffea')
-
     current_step += 1
     if current_step >= len(simulation_data['grid_state']):
         current_step = 0  # Reset to loop
-
     return dcc.Graph(figure=fig), {'step': current_step }
 
 @callback(

@@ -1,13 +1,7 @@
 from mesa.visualization.modules import CanvasGrid
 from mesa.visualization.ModularVisualization import ModularServer
 from mesa.visualization import Slider
-
-
-
 from .model import SkyHelixModel
-# from model import SkyHelixModel
-import math
-import numpy as np
 
 def agent_portrayal(agent):
     portrayal = {"Shape": "circle", "Filled": "true", "r": 0.5}
@@ -18,13 +12,10 @@ def agent_portrayal(agent):
     else:
         portrayal["Color"] = "red"
         portrayal["Layer"] = 1
-        # portrayal["r"] = 0.2
     return portrayal        
 
-# grid = CanvasGrid(agent_portrayal, 10, 10, 500, 500)
 grid = CanvasGrid(agent_portrayal, 50, 50 , 800, 800)
 
-# grid_width = math.ceil(num_passengers)
 server = ModularServer(SkyHelixModel,
                        [grid],
                        "Ticket Purchased Simulation Model",

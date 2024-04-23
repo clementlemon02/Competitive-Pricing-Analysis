@@ -1,9 +1,8 @@
-from mesa import Agent, Model
-from mesa.space import MultiGrid, SingleGrid
+from mesa import Model
+from mesa.space import SingleGrid
 from mesa.time import RandomActivation
 from mesa.datacollection import DataCollector
 from .agent import PassengerAgent
-# from agent import PassengerAgent
 import matplotlib
 matplotlib.use('Agg')
 import matplotlib.pyplot as plt
@@ -28,25 +27,12 @@ class SkyHelixModel(Model):
         }
         self.total_revenue = 0
         self.total_tickets_sold = 0
-        # self.grid = MultiGrid(self.grid_width, self.grid_height, True)
         self.grid = SingleGrid(self.grid_width, self.grid_height, True)
         self.schedule = RandomActivation(self)
         self.datacollector = DataCollector(
             agent_reporters={"Ticket_Purchased": lambda a: a.ticket_purchased}
         )
         self.create_agents()
-
-    # def create_agents(self):
-    #     # Now use self.demographic_densities directly
-    #     total_density = sum(self.demographic_densities.values())
-    #     for demographic, density in self.demographic_densities.items():
-    #         num_agents = int(self.num_passengers * (density / total_density))
-    #         for i in range(num_agents):
-    #             x = self.random.randrange(self.grid.width)
-    #             y = self.random.randrange(self.grid.height)
-    #             agent = PassengerAgent(i, self, demographic)
-    #             self.grid.place_agent(agent, (x, y))
-    #             self.schedule.add(agent)
 
     def create_agents(self):
         # Create a list of all possible coordinates on the grid
