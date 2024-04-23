@@ -25,6 +25,7 @@ def run_simulation(data):
                           grid_height = input_grid_height
                         )
     grid_state = []
+    ticket_prices = []
     agents = model.schedule.agents
 
     # Set all agents' purchased status to False initially
@@ -39,6 +40,7 @@ def run_simulation(data):
 
     # Add initial state to the grid state list
     grid_state.append(initial_state)
+    ticket_prices.append(0)
 
     
     # Run the model for a fixed number of steps
@@ -46,10 +48,13 @@ def run_simulation(data):
         model.step()
         # Capture Grid State
         step_state = [
-        {"x": agent.pos[0], "y": agent.pos[1], "purchased": agent.ticket_purchased}
+        {"x": agent.pos[0], 
+         "y": agent.pos[1], 
+         "purchased": agent.ticket_purchased}
         for agent in model.schedule.agents
         ]
         grid_state.append(step_state)
+        ticket_prices.append(model.ticket_price)
 
     # Access model data and visualize results
     optimized_parameters = model.get_optimized_parameters()
@@ -67,7 +72,7 @@ def run_simulation(data):
     # data = model.datacollector.get_agent_vars_dataframe()
 
     ## by front end: we need to add a return statement to print this out at the webpage
-    return {"optimized_parameters": optimized_parameters, "grid_state": grid_state}
+    return {"optimized_parameters": optimized_parameters, "grid_state": grid_state, "ticket_prices": ticket_prices}
 
 '''
 instead of a pop out window, we will transfer this code to the frontend code to display the plot in the html webpage
