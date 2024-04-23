@@ -122,15 +122,4 @@ if __name__ == "__main__":
     else:
         print("Failed to connect to the database.")
     app.run(host='0.0.0.0')
-
-# if __name__ == "__main__":
-#     if test_database_connection():
-#         print("Successfully connected to the database!")
-#         try:
-#             app.run(host='0.0.0.0', debug=False)
-#         except KeyboardInterrupt:
-#             print("\nServer stopped.")
-#     else:
-#         print("Failed to connect to the database.")
-#     app.run(host='0.0.0.0')
     
