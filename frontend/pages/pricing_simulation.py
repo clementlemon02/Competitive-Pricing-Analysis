@@ -17,9 +17,6 @@ import requests
 import json
 from dash.exceptions import PreventUpdate
 
-dash.register_page(__name__) 
-
-
 layout = html.Div([
     html.H1("Dynamic Simulation Display"),
     html.Div([  
@@ -31,7 +28,7 @@ layout = html.Div([
         dcc.Input(id="input-initial-ticket-price", type="number", value=20, style={'fontFamily': 'Lora'}),  
     ], style={'margin-bottom': '10px'}),
     html.Button("Run Simulation", id="run-simulation-button", n_clicks=0,  className="nav-text-selected nav-button-selected", style={'margin-bottom': '20px'}),
-    dcc.Interval(id='update-interval', interval=1000, n_intervals=0, disabled=True),  # Disabled initially
+    dcc.Interval(id='update-interval', interval=1000, n_intervals=0, disabled=True),
     dcc.Store(id='simulation-data-store'),  # To store simulation data
     dcc.Store(id='current-step', data={'step': 0}),  # To store current step index
     html.Div(id="simulation-output"),
@@ -102,28 +99,6 @@ def display_simulation_results(simulation_data):
     
     # Extract results data
     results = simulation_data.get('optimized_parameters', {})
-    
-    '''
-    # Create a bar chart trace  
-    bar_chart_trace = go.Bar(  
-    x=['Purchased Tickets', 'Did Not Purchase Tickets'],  
-    y=[output_data["Tickets_Purchased"], output_data["Tickets_Not_Purchased"]],  
-    marker=dict(color=['#046845'])  
-    )  
-  
-    # Create layout for the bar chart  
-    layout = go.Layout(  
-    plot_bgcolor='#E6FAD5',  
-    font=dict(family='Lora', size=18),  
-    xaxis=dict(title='Ticket Status',tickfont=dict(family='Lora', size=14)),  
-    yaxis=dict(title='Number of Agents',tickfont=dict(family='Lora', size=14)),  
-    height=700,  
-    width=700 
-    )  
-  
-    # Create a figure object  
-    fig = go.Figure(data=[bar_chart_trace], layout=layout)
-    '''
 
     # Generate a summary HTML layout
     return html.Div([
@@ -202,14 +177,3 @@ def display_simulation_results(simulation_data):
                     ])
         ])
     ], style={'padding': '20px', 'border': '1px solid #ccc', 'border-radius': '5px', 'margin-top': '20px'})
-    
-    
-
-
-'''
-        html.Div([  
-                    html.H2("Ticket Sales Simulation"),  
-                    html.P("Projected ticket sales"),  
-                    html.Div([dcc.Graph(id='ticket-purchase-chart', figure=fig)]),  
-                ],className='col-md-6', style={'margin-bottom': '20px'}),
-'''
