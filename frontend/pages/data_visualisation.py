@@ -8,7 +8,6 @@ import plotly.graph_objects as go
 from datetime import datetime 
 import calendar 
 
- 
 # Establish database connection 
 connection = mysql.connector.connect( 
     host='127.0.0.1', 
@@ -18,13 +17,12 @@ connection = mysql.connector.connect(
 ) 
  
 common_layout = dict( 
-    plot_bgcolor='#d8efb4',  # Change background color here 
+    plot_bgcolor='#d8efb4',
     paper_bgcolor = '#f7ffea',
     font=dict(family='Lora', size=18), 
     xaxis=dict(tickfont=dict(family='Lora', size=14)), 
     yaxis=dict(tickfont=dict(family='Lora', size=14)), 
-    legend=dict(font=dict(family='Lora', size=14)) 
-    #paper_bgcolor='#FCFFF9'  # Change paper (plot area) color here 
+    legend=dict(font=dict(family='Lora', size=14))
 ) 
  
  #1. competitor price 
@@ -60,7 +58,6 @@ rh_df = pd.read_sql(ridership_hour_query, connection)
 nationality_df = pd.read_sql(nationalities_query, connection) 
  
 # data manipulation 
-# rmb to change col names  
 rm_df['Date'] = pd.to_datetime(rm_df['Date'], format='%m/%d/%Y') 
 rm_df['Month'] = rm_df['Date'].dt.month_name() 
 rm_df['Year'] = rm_df['Date'].dt.year 
@@ -86,8 +83,7 @@ rh_fig = px.histogram(rh_df, x='Hour', y='Proportion',
 # Customize layout 
 rh_fig.update_layout(common_layout) 
  
- 
-# dropdown for month average 
+# Dropdown for month average 
 year_dropdown = dcc.Dropdown( 
                     id='year-dropdown', 
                     options=[{'label': year, 'value': year} for year in rm_df['Year'].unique()], 
@@ -103,9 +99,8 @@ year_dropdown = dcc.Dropdown(
 )
  
 #3. Tourism data  
-#Your SQL query to fetch data 
 tourist_nationality_query = ''' 
-   SELECT Year,'Place of Residence' AS Country,visitor_arrivals 
+   SELECT Year, Country,visitor_arrivals 
    FROM tourism.tourist_nationalities; 
 '''
 tourist_volume_query = ''' 
@@ -131,13 +126,13 @@ GROUP BY
 ORDER BY  
     Year DESC; 
 ''' 
- 
-# Fetching data from SQL and closing connection 
+
+# Fetching data from SQL
 tn_df = pd.read_sql(tourist_nationality_query, connection) 
 tv_df = pd.read_sql(tourist_volume_query, connection) 
 ta_df = pd.read_sql(tourist_agegroup_query, connection) 
- 
-#Convert data format 
+
+# Convert data format 
 melted_ta_df = pd.melt(ta_df, id_vars='Year', var_name='Age_Group', value_name='Average_Proportion') 
  
 months_order = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'] 
@@ -168,8 +163,8 @@ ta_fig = px.bar(melted_ta_df, y='Year', x='Average_Proportion', color='Age_Group
 ta_fig.update_layout(common_layout) 
 ta_fig.for_each_trace(lambda t: t.update(name="Youth" if t.name == "Avg_Y_Prop" else "Adult")) 
  
- 
-#4. revenue 
+
+#4. Revenue 
 sales_by_month_query = ''' 
     SELECT *  
     FROM mflg.sales_by_month  
@@ -188,11 +183,11 @@ monthly_revenue_df = pd.read_sql(sales_by_month_query, connection)
 monthly_revenue_b2c_df = pd.read_sql(sales_by_month_query_b2c, connection) 
 monthly_revenue_otc_df = pd.read_sql(sales_by_month_query_otc, connection) 
  
-#create df grouped by month to obtain data for different years  
+# Create df grouped by month to obtain data for different years  
 monthly_revenue_df['Month'] = pd.to_datetime(monthly_revenue_df['Month'], format='%b-%y') 
 monthly_revenue_df['month'] = monthly_revenue_df['Month'].dt.month_name() 
 monthly_revenue_df['Year'] = monthly_revenue_df['Month'].dt.year 
-#remove months without complete years 
+# Remove months without complete years 
 to_remove = [2021, 2024]  
 # Create a boolean mask using isin() 
 mask = monthly_revenue_df['Year'].isin(to_remove) 
@@ -201,15 +196,15 @@ mask = monthly_revenue_df['Year'].isin(to_remove)
 year_grp_revenue = monthly_revenue_df[~mask] 
  
 monthly_revenue_fig = px.line(monthly_revenue_df, x='Month', y='Total', title='Monthly Revenue (View by Revenue Source)') 
-monthly_revenue_div = dcc.Graph(figure=monthly_revenue_fig, id='monthly-revenue-fig') #assign div  
+monthly_revenue_div = dcc.Graph(figure=monthly_revenue_fig, id='monthly-revenue-fig')
 monthly_revenue_fig.update_layout(common_layout) 
 monthly_revenue_fig.update_traces(line=dict(color='#046845'))  
  
 year_revenue_fig = px.line(year_grp_revenue, x='Month', y='Total', title='Monthly Revenue (View by Year)') 
-year_revenue_div = dcc.Graph(figure=year_revenue_fig, id='yearly-revenue-fig') #assign div
+year_revenue_div = dcc.Graph(figure=year_revenue_fig, id='yearly-revenue-fig')
 year_revenue_fig.update_layout(common_layout) 
 year_revenue_fig.update_traces(line=dict(color='#046845'))  
-# for Dropdown and layout 
+# For Dropdown and layout 
 # Define the KPI components and their associated graphs
 kpi_components = { 
     "Occupancy Rate": {"Histogram of Hourly Ridership":rh_fig,"Ridership Nationalities":nationality_fig}, 
@@ -224,8 +219,8 @@ kpi_dropdown = dcc.Dropdown(
     options=[{"label": kpi, "value": kpi} for kpi in kpi_components.keys()], 
     value=list(kpi_components.keys())[0],  # Default to the first KPI component 
     style={
-        'color': '#3A3B2C',               # Default text color
-        'backgroundColor': '#d8efb4',    # Dropdown background color
+        'color': '#3A3B2C',
+        'backgroundColor': '#d8efb4',
         'borderColor': 'black',
         'borderWidth': 'medium',
         'fontWeight': 'bold'
@@ -238,30 +233,29 @@ revenue_type_dropdown = dcc.Dropdown(
         options=[{"label": revenue_type, "value": revenue_type} for revenue_type in ["B2C", "OTC", "Total"]], 
         value="OTC",  # Default to total revenue
         style={
-        'color': '#3A3B2C',               # Default text color
-        'backgroundColor': '#d8efb4',    # Dropdown background color
+        'color': '#3A3B2C',
+        'backgroundColor': '#d8efb4',
         'borderColor': 'black',
         'borderWidth': 'medium',
         'fontWeight': 'bold'
         }
     ) 
  
-#dropdown for year  
+# Dropdown for year  
 year_revenue_dropdown = dcc.Dropdown( 
         id="year-revenue-dropdown", 
         options=[{"label": year, "value": year} for year in ["2022", "2023"]], 
         value="2023",  # Default to 2023
         style={
-        'color': '#3A3B2C',               # Default text color
-        'backgroundColor': '#d8efb4',    # Dropdown background color
+        'color': '#3A3B2C',
+        'backgroundColor': '#d8efb4',
         'borderColor': 'black',
         'borderWidth': 'medium',
         'fontWeight': 'bold'
     }
     ) 
  
-#update graph to show different revenue types  
- 
+# Update graph to show different revenue types  
 @callback( 
     Output('monthly-revenue-fig', 'figure'), 
     [Input('revenue-type-dropdown', 'value')] 
@@ -282,9 +276,7 @@ def update_monthly_revenue(selected_revenue_type):
  
     return monthly_revenue_fig 
  
- 
-#update graph to show revenue from different years 
- 
+# Update graph to show revenue from different years 
 @callback( 
     Output('yearly-revenue-fig', 'figure'), 
     [Input('year-revenue-dropdown', 'value')] 
@@ -319,10 +311,8 @@ layout = html.Div([
     html.Div(revenue_type_dropdown, id='revenue-dropdown-container', style={'display': 'none'}), 
     html.Br(), 
     html.Div(year_revenue_dropdown, id='year-revenue-dropdown-container', style={'display': 'none'}) 
-]) 
- 
- 
- 
+])
+
 slider = dcc.RangeSlider( 
         id='price-range', 
         className='slider-bar', 
@@ -335,13 +325,14 @@ slider = dcc.RangeSlider(
     ) 
 cp_fig_div = dcc.Graph(id='price-boxplot')
 
-#Define callback to update box plot based on price range 
+# Define callback to update box plot based on price range 
 @callback( 
     Output('slider-labels', 'children'), 
     [Input('price-range', 'value')] 
 ) 
  
-#Define callback to update box plot based on price range 
+
+# Define callback to update box plot based on price range 
 @callback( 
     Output('price-boxplot', 'figure'), 
     [Input('price-range', 'value')] 
@@ -437,7 +428,5 @@ def update_monthly_ridership(selected_years):
         year_data = filtered_data[filtered_data['Year'] == year] 
         rm_fig.add_scatter(x=year_data['Month'], y=year_data['Ridership'], mode='lines',
         line=dict(dash='dash'), name=f'Year {year}') 
- 
-    return rm_fig
 
-dash.register_page(__name__, path='/data-visualisation', title='Data Visualisation')
+    return rm_fig

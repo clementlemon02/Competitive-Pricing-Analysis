@@ -2,9 +2,6 @@ import dash
 from dash import html
 import dash_bootstrap_components as dbc
 
-# Register the page
-dash.register_page(__name__, path='/', title='MFLG')
-
 company_text = """
 Mount Faber Leisure Group is a Singapore-based company that focuses on developing and 
 managing leisure and lifestyle attractions. The group is known for its diverse portfolio of 
@@ -32,9 +29,9 @@ competitor prices and tourism information.
 
 student_text_3 = """
 On the model visualization page, we will offer business stakeholders the ability to project 
-ticket sales and revenue while adjusting for the number of visitors, experimental product price, 
-and competitors' prices. The model will also suggest optimal pricing to increase product sales 
-and revenue, helping businesses make data-driven decisions on product pricing.
+ticket sales and revenue while adjusting for the number of visitors and experimenting with different prices. 
+The model will also suggest optimal pricing to increase product sales and revenue, helping 
+businesses make data-driven decisions on product pricing.
 """
 
 layout = html.Div([
@@ -43,7 +40,7 @@ layout = html.Div([
     html.P(student_text_1),
     html.P(student_text_2),
     html.P(student_text_3),
-    html.P("Check out the Mount Faber Leisure Group website: "), 
+    html.P("Check out the Mount Faber Leisure Group website: "),
     dbc.Button("Mount Faber Leisure Group", href="https://www.mountfaberleisure.com/", target="_blank", color="secondary", className="nav-text-selected nav-button-selected mr-1")
-], className='container py-3')  
+], className='intro')  
 

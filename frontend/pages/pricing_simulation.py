@@ -7,16 +7,11 @@ import os
 parent_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..')) 
 parent_dir = os.path.abspath(os.path.join(parent_dir, '..')) 
 sys.path.insert(0, parent_dir) 
+from Backend.pricesimulation.main import run_simulation 
 import plotly.graph_objects as go 
 import requests 
 import dash
-from dash import html, dcc, callback, Input, Output, State
 import plotly.graph_objects as go
-import requests
-import json
-from dash.exceptions import PreventUpdate
-import math
-
 
 layout = html.Div([
     html.H1("Dynamic Simulation Display"),
@@ -29,7 +24,7 @@ layout = html.Div([
         dcc.Input(id="input-initial-ticket-price", type="number", value=20, style={'fontFamily': 'Lora'}),  
     ], style={'margin-bottom': '10px'}),
     html.Button("Run Simulation", id="run-simulation-button", n_clicks=0,  className="nav-text-selected nav-button-selected", style={'margin-bottom': '20px'}),
-    dcc.Interval(id='update-interval', interval=1000, n_intervals=0, disabled=True),  # Disabled initially
+    dcc.Interval(id='update-interval', interval=1000, n_intervals=0, disabled=True),
     dcc.Store(id='simulation-data-store'),  # To store simulation data
     dcc.Store(id='current-step', data={'step': 0}),  # To store current step index
     html.Div(id="simulation-output"),
@@ -54,7 +49,7 @@ def fetch_simulation_data(n_clicks, num_passengers, initial_ticket_price):
         'input_initial_ticket_price': initial_ticket_price,
         "input_competitors_price": input_competitors_price
     }
-    response = requests.post('http://127.0.0.1:5001/pricing-simulation', json=input_data)
+    response = requests.post('http://127.0.0.1:5000/pricing-simulation', json=input_data)
     if response.status_code == 200:
         data = response.json()
         return data, False  # Enable interval updates
@@ -73,26 +68,19 @@ def update_simulation_visualization(n_intervals, simulation_data, current_step_d
 
     current_step = current_step_data['step'] 
     grid_state = simulation_data['grid_state'][current_step]
-    ticket_price = simulation_data['ticket_prices'][current_step]
-    x_axis = y_axis = math.ceil(math.sqrt(len(grid_state)))
-
     purchased_x = [cell['x'] for cell in grid_state if cell['purchased']]
     purchased_y = [cell['y'] for cell in grid_state if cell['purchased']]
     not_purchased_x = [cell['x'] for cell in grid_state if not cell['purchased']]
     not_purchased_y = [cell['y'] for cell in grid_state if not cell['purchased']]
-    
     fig = go.Figure()
-    fig.add_trace(go.Scatter(x=purchased_x, y=purchased_y, mode='markers', marker=dict(color='green', size=10), showlegend=False))
-    fig.add_trace(go.Scatter(x=not_purchased_x, y=not_purchased_y, mode='markers', marker=dict(color='red', size=10), showlegend=False))
-    fig.update_layout(title=f'Step {current_step}, Price = ${"{:.2f}".format(ticket_price)}', xaxis=dict(range=[-1, x_axis]), yaxis=dict(range=[-1, y_axis]),paper_bgcolor = '#f7ffea')
-    fig.update_xaxes(showticklabels=False)
-    fig.update_yaxes(showticklabels=False)
-
+    fig.add_trace(go.Scatter(x=purchased_x, y=purchased_y, mode='markers', marker=dict(color='green', size=10), name='Purchased'))
+    fig.add_trace(go.Scatter(x=not_purchased_x, y=not_purchased_y, mode='markers', marker=dict(color='red', size=10), name='Not Purchased'))
+    fig.update_layout(title=f'Step {current_step}', xaxis=dict(range=[-1, 100]), yaxis=dict(range=[-1, 100]),paper_bgcolor = '#f7ffea')
     current_step += 1
     if current_step >= len(simulation_data['grid_state']):
         current_step = 0  # Reset to loop
+    return dcc.Graph(figure=fig), {'step': current_step }
 
-    return dcc.Graph(figure=fig), {'step': current_step}
 @callback(
     Output('simulation-results', 'children'),
     Input('simulation-data-store', 'data')
@@ -103,28 +91,6 @@ def display_simulation_results(simulation_data):
     
     # Extract results data
     results = simulation_data.get('optimized_parameters', {})
-    
-    '''
-    # Create a bar chart trace  
-    bar_chart_trace = go.Bar(  
-    x=['Purchased Tickets', 'Did Not Purchase Tickets'],  
-    y=[output_data["Tickets_Purchased"], output_data["Tickets_Not_Purchased"]],  
-    marker=dict(color=['#046845'])  
-    )  
-  
-    # Create layout for the bar chart  
-    layout = go.Layout(  
-    plot_bgcolor='#E6FAD5',  
-    font=dict(family='Lora', size=18),  
-    xaxis=dict(title='Ticket Status',tickfont=dict(family='Lora', size=14)),  
-    yaxis=dict(title='Number of Agents',tickfont=dict(family='Lora', size=14)),  
-    height=700,  
-    width=700 
-    )  
-  
-    # Create a figure object  
-    fig = go.Figure(data=[bar_chart_trace], layout=layout)
-    '''
 
     # Generate a summary HTML layout
     return html.Div([
@@ -138,7 +104,7 @@ def display_simulation_results(simulation_data):
         html.Div([  
             html.P([
                     'Gardens by the Bay',
-                    html.Span(' - Floral Fantasy: Singapore Residents ', style={'font-style': 'italic'}), 
+                    html.Span(' - Floral Fantasy: Singaopre Residents ', style={'font-style': 'italic'}), 
                     html.Span(' S$10', style={'font-weight': 'bold'})
                     ]),
             html.P([
@@ -197,13 +163,9 @@ def display_simulation_results(simulation_data):
                     html.Span(' S$40', style={'font-weight': 'bold'})
                     ]),
             html.P([
-                    'Mandai Wildlife Reserve',
+                    'Mantai Wildlife Reserve',
                     html.Span(' - Admission Ticket + Tram Ride: Singapore Residents ', style={'font-style': 'italic'}), 
                     html.Span(' S$45.60', style={'font-weight': 'bold'})
                     ])
         ])
     ], style={'padding': '20px', 'border': '1px solid #ccc', 'border-radius': '5px', 'margin-top': '20px'})
-    
-    
-
-dash.register_page(__name__, path='/pricing-simulation', title='Pricing Simulation')

@@ -5,7 +5,7 @@
 }
 
 .nav-text-selected {
-    color: #FFFFFF;
+    color: #FFFFFF !important;
     text-align: center;
 }
 
@@ -43,23 +43,28 @@
     font-family: 'Lora', serif;
 }
 
- .navbar {
+.navbar {
     position: fixed;
     top: 0;
     width: 100%;
-    background-color: #333;
+    background-color: #d8efb4 !important; 
+    /*background-color: #e3e2e2 !important;*/
     z-index: 1000; /* Ensure navbar is above other content */
- }
+}
   
 
-p {
+P {
     font-family: 'Lora', serif;
+    font-size: 15px;
+}
+
+.intro P {
     font-size: 18px;
 }
 
 h1 {
     font-family: 'Lora', serif;
-    font-size: 32px;
+    font-size: 34px;
 } 
 
 h2 {
@@ -77,4 +82,8 @@ h2 {
 
 .slider-bar .rc-slider-handle {
     border-color: #F0AA06;
+}
+
+body {
+    background-color: #f7ffea;
 }
