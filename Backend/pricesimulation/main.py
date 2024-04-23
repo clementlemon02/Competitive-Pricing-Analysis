@@ -19,6 +19,7 @@ def run_simulation(data):
                           grid_height = input_grid_height
                         )
     grid_state = []
+    ticket_prices = []
     agents = model.schedule.agents
 
     # Set all agents' purchased status to False initially
@@ -33,19 +34,23 @@ def run_simulation(data):
 
     # Add initial state to the grid state list
     grid_state.append(initial_state)
+    ticket_prices.append(0)
 
     # Run the model for a fixed number of steps
     for i in np.arange(10):  
         model.step()
         # Capture Grid State
         step_state = [
-        {"x": agent.pos[0], "y": agent.pos[1], "purchased": agent.ticket_purchased}
+        {"x": agent.pos[0], 
+         "y": agent.pos[1], 
+         "purchased": agent.ticket_purchased}
         for agent in model.schedule.agents
         ]
         grid_state.append(step_state)
+        ticket_prices.append(model.ticket_price)
 
     optimized_parameters = model.get_optimized_parameters()
-    return {"optimized_parameters": optimized_parameters, "grid_state": grid_state}
+    return {"optimized_parameters": optimized_parameters, "grid_state": grid_state, "ticket_prices": ticket_prices}
 
 if __name__ == "__main__":
     # Example usage
