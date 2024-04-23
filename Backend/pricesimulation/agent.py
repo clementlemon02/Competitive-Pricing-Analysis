@@ -1,6 +1,6 @@
 import numpy as np
 import random
-from mesa import Agent, Model
+from mesa import Agent
 
 
 class PassengerAgent(Agent):
@@ -14,7 +14,7 @@ class PassengerAgent(Agent):
                 "leisure_time": round(random.uniform(1, 5), 2)
             }
             self.willingness_to_pay = {
-                "base_price": round(np.abs(np.random.normal(0, 0)), 2),                                        # best price is free
+                "base_price": 0.0,    # best price is free
                 "max_price": round(np.random.normal(40, 4), 2),
                 "price_sensitivity": round(random.uniform(1, 5), 2)
             }
@@ -29,7 +29,7 @@ class PassengerAgent(Agent):
                 "leisure_time": round(random.uniform(1, 5), 2)
             }
             self.willingness_to_pay = {
-                "base_price": round(np.abs(np.random.normal(0, 0)), 2),
+                "base_price": 0.0,
                 "max_price": round(np.random.normal(40, 4), 2),
                 "price_sensitivity": round(random.uniform(1, 5), 2)
             }
@@ -44,7 +44,7 @@ class PassengerAgent(Agent):
                 "leisure_time": round(random.uniform(1, 5), 2)
             }
             self.willingness_to_pay = {
-                "base_price": round(np.abs(np.random.normal(0, 0)), 2),
+                "base_price": 0.0,
                 "max_price": round(np.random.normal(40, 4), 2),
                 "price_sensitivity": round(random.uniform(1, 5), 2)
             }
