@@ -1,8 +1,6 @@
-# Front End with Dash
+# Frontend with Dash
 
-**Dashboard README**
-
----
+__
 
 ## Introduction
 
