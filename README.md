@@ -1,3 +1,7 @@
+# Project Background and Overview
+We are a group of Data Science and Analytics students from NUS working on optimizing entertainment and attraction prices. 
+
+In this project, we offer visualizations for product-specific data, which include occupancy rate and product revenue, as well as factors that impact product performance, like competitor prices and tourism information. We also utilized mesa, an agent based simulation model to find the best pricing strategy to maximize revenue.
 # Instruction on Running the Model
 
 
