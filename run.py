@@ -8,10 +8,12 @@ frontend_process = None
 def run_backend():
     global backend_process
     backend_process = subprocess.Popen(["python", "backend/app.py"])
+    # Note: If you are using macOS, you may need to change "python" to "python3.xx" depending on your Python version.
 
 def run_frontend():
     global frontend_process
     frontend_process = subprocess.Popen(["python", "frontend/app.py"])
+    # Note: If you are using macOS, you may need to change "python" to "python3.xx" depending on your Python version.
 
 def terminate_processes():
     global backend_process, frontend_process

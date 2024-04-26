@@ -1,6 +1,8 @@
 # Instruction on Running the Model
 
-## Prerequisite
+
+## Run the Model Using Docker
+### Prerequisite
 -  Ensure Git and Docker are installed on your system.
 
 
@@ -92,3 +94,11 @@
 
 - Running `docker-compose down` does not remove the Docker images that were built earlier. If you want to remove the images as well, you can use the `docker-compose down --rmi all` command. However, be cautious as this will remove all Docker images associated with your project.
 - After stopping the containers, you can start them again using `docker-compose up` whenever you want to run your application.
+
+
+
+
+##
+Alternatively, we also suggest another way to run the model. If you have python installed on your system, you can create a virtual environment in the root directory using `venv` or `virtualenv`. Then, activate the environment and install dependencies from `requirements.txt`. Next, configure environment variables by copying `.env.example` to `.env` in the backend directory and adjust values as needed. Finally, execute `run.py` to start the backend server and frontend webpage, accessing the application through specified URLs in a web browser.
+
+Remarks: If you're using macOS, you might need to make a minor adjustment in `run.py`. For more information, please consult the instructions provided within the `run.py` file.
