@@ -95,7 +95,6 @@ class SkyHelixModel(Model):
       tickets_purchased, tickets_not_purchased = self.get_ticket_counts()
       optimized_parameters = {
         "Optimized_Ticket_Price": round(self.ticket_price,2),
-        "Expected_Passengers": tickets_purchased,  # This now directly reflects tickets purchased
         "Expected_Revenue": round(round(self.ticket_price,2)*tickets_purchased,2),
         "Tickets_Purchased": tickets_purchased,
         "Tickets_Not_Purchased": tickets_not_purchased
