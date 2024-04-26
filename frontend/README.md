@@ -1,7 +1,5 @@
 # Frontend with Dash
 
-__
-
 ## Introduction
 
 Welcome to our Python Dash Dashboard! This dashboard is created for the project on Competitive Pricing Analysis and Optimization under Mount Faber Leisure Group.
