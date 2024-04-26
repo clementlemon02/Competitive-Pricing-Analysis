@@ -1,5 +1,5 @@
 # Use the official Python image
-FROM python:3.8
+FROM python:3.8-slim
 
 # Install pkg-config and other necessary dependencies
 RUN apt-get update \
