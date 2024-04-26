@@ -3,6 +3,13 @@ werkzeug==2.0.2
 sqlalchemy==1.4.*
 mesa==0.9.0
 matplotlib==3.5.1
+mysql
 mysqlclient
 pytest
 dash
+python-dotenv
+mesa==0.9.0
+matplotlib==3.5.1
+seaborn
+mysql-connector-python
+requests

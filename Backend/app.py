@@ -253,4 +253,6 @@ if __name__ == "__main__":
         print("Successfully connected to the database!")
     else:
         print("Failed to connect to the database.")
-    app.run(host='0.0.0.0')
+    app.run(host='0.0.0.0', port=5000, debug=True)
+
+    

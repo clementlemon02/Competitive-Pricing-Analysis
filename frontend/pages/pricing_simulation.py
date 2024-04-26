@@ -7,7 +7,6 @@ import os
 parent_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..')) 
 parent_dir = os.path.abspath(os.path.join(parent_dir, '..')) 
 sys.path.insert(0, parent_dir) 
-from Backend.pricesimulation.main import run_simulation 
 import plotly.graph_objects as go 
 import requests 
 import dash

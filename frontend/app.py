@@ -37,5 +37,5 @@ def display_page(pathname):
         return data_visualisation.layout
 
 
-if __name__ == '__main__': 
-    app.run_server(debug=True)
+if __name__ == '__main__':
+    app.run(host='0.0.0.0', port=8050, debug=True)
