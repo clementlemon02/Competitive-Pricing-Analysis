@@ -92,4 +92,3 @@
 
 - Running `docker-compose down` does not remove the Docker images that were built earlier. If you want to remove the images as well, you can use the `docker-compose down --rmi all` command. However, be cautious as this will remove all Docker images associated with your project.
 - After stopping the containers, you can start them again using `docker-compose up` whenever you want to run your application.
-```
