@@ -26,30 +26,6 @@ Ensure you have the following installed:
 - Pandas (for data manipulation)
 - Plotly (for interactive visualizations)
 
-### Installation
-
-1. Clone this repository to your local machine:
-
-```
-git clone <repository-url>
-```
-
-2. Install dependencies:
-
-```
-pip install -r requirements.txt
-```
-
-### Running the Dashboard
-
-Run the following command to start the dashboard:
-
-```
-python app.py
-```
-
-Open your web browser and navigate to `http://localhost:8050` to access the dashboard.
-
 ## Usage
 
 1. Exploring insights into Singapore tourism and tourist attractions statistics.
